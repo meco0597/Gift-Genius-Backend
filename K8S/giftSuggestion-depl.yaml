@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: giftSuggestions-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: giftSuggestionservice
+  template:
+    metadata:
+      labels:
+        app: giftSuggestionservice
+    spec:
+      containers:
+        - name: giftSuggestionservice
+          image: binarythistle/giftSuggestionservice:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: giftSuggestions-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: giftSuggestionservice
+  ports:
+  - name: giftSuggestionservice
+    protocol: TCP
+    port: 80
+    targetPort: 80

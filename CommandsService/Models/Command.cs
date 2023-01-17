@@ -15,8 +15,8 @@ namespace CommandsService.Models
         public string CommandLine { get; set; }
 
         [Required]
-        public int PlatformId { get; set; }
+        public int GiftSuggestionId { get; set; }
 
-        public Platform Platform {get; set;}
+        public GiftSuggestion GiftSuggestion { get; set; }
     }
 }

@@ -25,8 +25,8 @@ namespace CommandsService.EventProcessing
 
             switch (eventType)
             {
-                case EventType.PlatformPublished:
-                    addPlatform(message);
+                case EventType.GiftSuggestionPublished:
+                    addGiftSuggestion(message);
                     break;
                 default:
                     break;
@@ -39,43 +39,43 @@ namespace CommandsService.EventProcessing
 
             var eventType = JsonSerializer.Deserialize<GenericEventDto>(notifcationMessage);
 
-            switch(eventType.Event)
+            switch (eventType.Event)
             {
-                case "Platform_Published":
-                    Console.WriteLine("--> Platform Published Event Detected");
-                    return EventType.PlatformPublished;
+                case "GiftSuggestion_Published":
+                    Console.WriteLine("--> GiftSuggestion Published Event Detected");
+                    return EventType.GiftSuggestionPublished;
                 default:
                     Console.WriteLine("--> Could not determine the event type");
                     return EventType.Undetermined;
             }
         }
 
-        private void addPlatform(string platformPublishedMessage)
+        private void addGiftSuggestion(string giftSuggestionPublishedMessage)
         {
             using (var scope = _scopeFactory.CreateScope())
             {
                 var repo = scope.ServiceProvider.GetRequiredService<ICommandRepo>();
-                
-                var platformPublishedDto = JsonSerializer.Deserialize<PlatformPublishedDto>(platformPublishedMessage);
+
+                var giftSuggestionPublishedDto = JsonSerializer.Deserialize<GiftSuggestionPublishedDto>(giftSuggestionPublishedMessage);
 
                 try
                 {
-                    var plat = _mapper.Map<Platform>(platformPublishedDto);
-                    if(!repo.ExternalPlatformExists(plat.ExternalID))
+                    var plat = _mapper.Map<GiftSuggestion>(giftSuggestionPublishedDto);
+                    if (!repo.ExternalGiftSuggestionExists(plat.ExternalID))
                     {
-                        repo.CreatePlatform(plat);
+                        repo.CreateGiftSuggestion(plat);
                         repo.SaveChanges();
-                        Console.WriteLine("--> Platform added!");
+                        Console.WriteLine("--> GiftSuggestion added!");
                     }
                     else
                     {
-                        Console.WriteLine("--> Platform already exisits...");
+                        Console.WriteLine("--> GiftSuggestion already exisits...");
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"--> Could not add Platform to DB {ex.Message}");
+                    Console.WriteLine($"--> Could not add GiftSuggestion to DB {ex.Message}");
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace CommandsService.EventProcessing
 
     enum EventType
     {
-        PlatformPublished,
+        GiftSuggestionPublished,
         Undetermined
     }
 }

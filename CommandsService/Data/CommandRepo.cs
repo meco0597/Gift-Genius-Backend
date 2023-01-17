@@ -14,52 +14,52 @@ namespace CommandsService.Data
             _context = context;
         }
 
-        public void CreateCommand(int platformId, Command command)
+        public void CreateCommand(int giftSuggestionId, Command command)
         {
             if (command == null)
             {
                 throw new ArgumentNullException(nameof(command));
             }
 
-            command.PlatformId = platformId;
+            command.GiftSuggestionId = giftSuggestionId;
             _context.Commands.Add(command);
         }
 
-        public void CreatePlatform(Platform plat)
+        public void CreateGiftSuggestion(GiftSuggestion plat)
         {
-            if(plat == null)
+            if (plat == null)
             {
                 throw new ArgumentNullException(nameof(plat));
             }
-            _context.Platforms.Add(plat);
+            _context.GiftSuggestions.Add(plat);
         }
 
-        public bool ExternalPlatformExists(int externalPlatformId)
+        public bool ExternalGiftSuggestionExists(int externalGiftSuggestionId)
         {
-            return _context.Platforms.Any(p => p.ExternalID == externalPlatformId);
+            return _context.GiftSuggestions.Any(p => p.ExternalID == externalGiftSuggestionId);
         }
 
-        public IEnumerable<Platform> GetAllPlatforms()
+        public IEnumerable<GiftSuggestion> GetAllGiftSuggestions()
         {
-            return _context.Platforms.ToList();
+            return _context.GiftSuggestions.ToList();
         }
 
-        public Command GetCommand(int platformId, int commandId)
-        {
-            return _context.Commands
-                .Where(c => c.PlatformId == platformId && c.Id == commandId).FirstOrDefault();
-        }
-
-        public IEnumerable<Command> GetCommandsForPlatform(int platformId)
+        public Command GetCommand(int giftSuggestionId, int commandId)
         {
             return _context.Commands
-                .Where(c => c.PlatformId == platformId)
-                .OrderBy(c => c.Platform.Name);
+                .Where(c => c.GiftSuggestionId == giftSuggestionId && c.Id == commandId).FirstOrDefault();
         }
 
-        public bool PlaformExits(int platformId)
+        public IEnumerable<Command> GetCommandsForGiftSuggestion(int giftSuggestionId)
         {
-            return _context.Platforms.Any(p => p.Id == platformId);
+            return _context.Commands
+                .Where(c => c.GiftSuggestionId == giftSuggestionId)
+                .OrderBy(c => c.GiftSuggestion.Name);
+        }
+
+        public bool PlaformExits(int giftSuggestionId)
+        {
+            return _context.GiftSuggestions.Any(p => p.Id == giftSuggestionId);
         }
 
         public bool SaveChanges()

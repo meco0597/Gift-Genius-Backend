@@ -7,15 +7,15 @@ namespace CommandsService.Data
     {
         bool SaveChanges();
 
-        // Platforms
-        IEnumerable<Platform> GetAllPlatforms();
-        void CreatePlatform(Platform plat);
-        bool PlaformExits(int platformId);
-        bool ExternalPlatformExists(int externalPlatformId);
+        // GiftSuggestions
+        IEnumerable<GiftSuggestion> GetAllGiftSuggestions();
+        void CreateGiftSuggestion(GiftSuggestion plat);
+        bool PlaformExits(int giftSuggestionId);
+        bool ExternalGiftSuggestionExists(int externalGiftSuggestionId);
 
         // Commands
-        IEnumerable<Command> GetCommandsForPlatform(int platformId);
-        Command GetCommand(int platformId, int commandId);
-        void CreateCommand(int platformId, Command command);
+        IEnumerable<Command> GetCommandsForGiftSuggestion(int giftSuggestionId);
+        Command GetCommand(int giftSuggestionId, int commandId);
+        void CreateCommand(int giftSuggestionId, Command command);
     }
 }

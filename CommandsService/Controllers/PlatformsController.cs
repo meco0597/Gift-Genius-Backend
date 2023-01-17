@@ -9,25 +9,25 @@ namespace CommandsService.Controllers
 {
     [Route("api/c/[controller]")]
     [ApiController]
-    public class PlatformsController : ControllerBase
+    public class GiftSuggestionsController : ControllerBase
     {
         private readonly ICommandRepo _repository;
         private readonly IMapper _mapper;
 
-        public PlatformsController(ICommandRepo repository, IMapper mapper)
+        public GiftSuggestionsController(ICommandRepo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<PlatformreadDto>> GetPlatforms()
+        public ActionResult<IEnumerable<GiftSuggestionreadDto>> GetGiftSuggestions()
         {
-            Console.WriteLine("--> Getting Platforms from CommandsService");
+            Console.WriteLine("--> Getting GiftSuggestions from CommandsService");
 
-            var platformItems = _repository.GetAllPlatforms();
+            var giftSuggestionItems = _repository.GetAllGiftSuggestions();
 
-            return Ok(_mapper.Map<IEnumerable<PlatformreadDto>>(platformItems));
+            return Ok(_mapper.Map<IEnumerable<GiftSuggestionreadDto>>(giftSuggestionItems));
         }
 
         [HttpPost]
@@ -35,7 +35,7 @@ namespace CommandsService.Controllers
         {
             Console.WriteLine("--> Inbound POST # Command Service");
 
-            return Ok("Inbound test of from Platforms Controler");
+            return Ok("Inbound test of from GiftSuggestions Controler");
         }
     }
 }

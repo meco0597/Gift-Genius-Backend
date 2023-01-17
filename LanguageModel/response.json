@@ -1,0 +1,26 @@
+[
+    {
+        "giftIdea": "Cookbook by a celebrity chef",
+        "giftCategories": [
+            "cooking"
+        ],
+        "priceRange": "25-50",
+        "giftDescription": "This gift will allow them to explore unique cooking recipes!"
+    },
+    {
+        "giftIdea": "Singing lesson gift certificate",
+        "giftCategories": [
+            "singing"
+        ],
+        "priceRange": "25-50",
+        "giftDescription": "They will get to enhance their singing skills."
+    },
+    {
+        "giftIdea": "Kitchen knife set",
+        "giftCategories": [
+            "cooking"
+        ],
+        "priceRange": "60-80",
+        "giftDescription": "It will make their life in the kitchen much easier."
+    }
+]

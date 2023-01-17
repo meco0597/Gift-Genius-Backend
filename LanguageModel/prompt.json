@@ -1,0 +1,12 @@
+{
+    "occasion": "Valentines Day",
+    "ageOfRecipient": 28,
+    "sexOfRecipient": "Female",
+    "giftCategories": [
+        "cooking",
+        "sewing",
+        "singing"
+    ],
+    "minPrice": 50,
+    "maxPrice": 100
+}

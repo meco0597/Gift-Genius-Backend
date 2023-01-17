@@ -10,14 +10,14 @@ spec:
     - host: acme.com
       http:
         paths:
-          - path: /api/platforms
+          - path: /api/giftSuggestions
             pathType: Prefix
             backend:
               service:
-                name: platforms-clusterip-srv
+                name: giftSuggestions-clusterip-srv
                 port:
                   number: 80
-          - path: /api/c/platforms
+          - path: /api/c/giftSuggestions
             pathType: Prefix
             backend:
               service:
