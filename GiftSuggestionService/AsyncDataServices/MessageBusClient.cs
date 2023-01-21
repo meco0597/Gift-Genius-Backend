@@ -39,7 +39,7 @@ namespace GiftSuggestionService.AsyncDataServices
             }
         }
 
-        public void PublishNewGiftSuggestion(GiftSuggestionPublishedDto giftSuggestionPublishedDto)
+        public void PublishNewGiftSuggestion(GiftSuggestionPutDto giftSuggestionPublishedDto)
         {
             var message = JsonSerializer.Serialize(giftSuggestionPublishedDto);
 

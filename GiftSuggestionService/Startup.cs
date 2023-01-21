@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using GiftSuggestionService.AsyncDataServices;
 using GiftSuggestionService.Data;
 using GiftSuggestionService.SyncDataServices.Http;
+using GiftSuggestionService.Configurations;
 
 namespace GiftSuggestionService
 {
@@ -31,26 +32,12 @@ namespace GiftSuggestionService
             _env = env;
         }
 
-
         public void ConfigureServices(IServiceCollection services)
         {
-            if (_env.IsProduction())
-            {
-                Console.WriteLine("--> Using SqlServer Db");
-                services.AddDbContext<AppDbContext>(opt =>
-                    opt.UseSqlServer(Configuration.GetConnectionString("GiftSuggestionsConn")));
-            }
-            else
-            {
-                Console.WriteLine("--> Using InMem Db");
-                services.AddDbContext<AppDbContext>(opt =>
-                     opt.UseInMemoryDatabase("InMem"));
-            }
-
             services.AddScoped<IGiftSuggestionRepo, GiftSuggestionRepo>();
+            services.Configure<Dbconfiguration>(Configuration.GetSection("GiftSuggestionsDatabase"));
 
-            services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
-            services.AddSingleton<IMessageBusClient, MessageBusClient>();
+            //services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
@@ -59,7 +46,6 @@ namespace GiftSuggestionService
             });
 
             Console.WriteLine($"--> CommandService Endpoint {Configuration["CommandService"]}");
-
         }
 
 
@@ -83,9 +69,7 @@ namespace GiftSuggestionService
                 endpoints.MapControllers();
             });
 
-
-            PrepDb.PrepPopulation(app, env.IsProduction());
-
+            PrepDb.PrepPopulation(app);
         }
     }
 }

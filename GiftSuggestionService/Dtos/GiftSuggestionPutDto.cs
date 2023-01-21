@@ -3,15 +3,14 @@ namespace GiftSuggestionService.Dtos
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using GiftSuggestionService.Models;
 
-    public class GiftSuggestionReadDto
+    public class GiftSuggestionPutDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         public string GiftName { get; set; }
-
-        public DateTime CreatedAt { get; set; }
 
         public Uri Link { get; set; }
 

@@ -1,42 +1,47 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using GiftSuggestionService.Models;
+using GiftSuggestionService.Configurations;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 namespace GiftSuggestionService.Data
 {
     public class GiftSuggestionRepo : IGiftSuggestionRepo
     {
-        private readonly AppDbContext _context;
+        private readonly IMongoCollection<GiftSuggestion> giftSuggestionsCollection;
+        private readonly Dbconfiguration dbConfiguration;
 
-        public GiftSuggestionRepo(AppDbContext context)
+        public GiftSuggestionRepo(
+            IOptionsMonitor<Dbconfiguration> optionsMonitor)
         {
-            _context = context;
+            this.dbConfiguration = optionsMonitor.CurrentValue;
+
+            var mongoClient = new MongoClient(
+                this.dbConfiguration.ConnectionString);
+
+            var mongoDatabase = mongoClient.GetDatabase(
+                this.dbConfiguration.DatabaseName);
+
+            this.giftSuggestionsCollection = mongoDatabase.GetCollection<GiftSuggestion>(
+                this.dbConfiguration.CollectionName);
         }
 
-        public void CreateGiftSuggestion(GiftSuggestion plat)
-        {
-            if (plat == null)
-            {
-                throw new ArgumentNullException(nameof(plat));
-            }
+        public async Task<List<GiftSuggestion>> GetAsync() =>
+            await this.giftSuggestionsCollection.Find(_ => true).ToListAsync();
 
-            _context.GiftSuggestions.Add(plat);
-        }
+        public async Task<GiftSuggestion> GetAsync(Guid id) =>
+            await this.giftSuggestionsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public IEnumerable<GiftSuggestion> GetAllGiftSuggestions()
-        {
-            return _context.GiftSuggestions.ToList();
-        }
+        public async Task CreateAsync(GiftSuggestion newGiftSuggestion) =>
+            await this.giftSuggestionsCollection.InsertOneAsync(newGiftSuggestion);
 
-        public GiftSuggestion GetGiftSuggestionById(int id)
-        {
-            return _context.GiftSuggestions.FirstOrDefault(p => p.Id == id);
-        }
+        public async Task UpdateAsync(Guid id, GiftSuggestion updatedGiftSuggestion) =>
+            await this.giftSuggestionsCollection.ReplaceOneAsync(x => x.Id == id, updatedGiftSuggestion);
 
-        public bool SaveChanges()
-        {
-            return (_context.SaveChanges() >= 0);
-        }
+        public async Task RemoveAsync(Guid id) =>
+            await this.giftSuggestionsCollection.DeleteOneAsync(x => x.Id == id);
     }
 }

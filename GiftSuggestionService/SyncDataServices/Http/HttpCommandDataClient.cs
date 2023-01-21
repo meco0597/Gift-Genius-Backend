@@ -19,7 +19,6 @@ namespace GiftSuggestionService.SyncDataServices.Http
             _configuration = configuration;
         }
 
-
         public async Task SendGiftSuggestionToCommand(GiftSuggestionReadDto plat)
         {
             var httpContent = new StringContent(

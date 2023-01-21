@@ -37,15 +37,15 @@ namespace GiftSuggestionService.Controllers
         {
             Console.WriteLine("--> Getting GiftSuggestions....");
 
-            var giftSuggestionItem = _repository.GetAllGiftSuggestions();
+            var giftSuggestionItem = _repository.GetAsync();
 
             return Ok(_mapper.Map<IEnumerable<GiftSuggestionReadDto>>(giftSuggestionItem));
         }
 
         [HttpGet("{id}", Name = "GetGiftSuggestionById")]
-        public ActionResult<GiftSuggestionReadDto> GetGiftSuggestionById(int id)
+        public ActionResult<GiftSuggestionReadDto> GetGiftSuggestionById(Guid id)
         {
-            var giftSuggestionItem = _repository.GetGiftSuggestionById(id);
+            var giftSuggestionItem = _repository.GetAsync(id);
             if (giftSuggestionItem != null)
             {
                 return Ok(_mapper.Map<GiftSuggestionReadDto>(giftSuggestionItem));
@@ -55,11 +55,10 @@ namespace GiftSuggestionService.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GiftSuggestionReadDto>> CreateGiftSuggestion(GiftSuggestionCreateDto giftSuggestionCreateDto)
+        public async Task<ActionResult<GiftSuggestionReadDto>> CreateGiftSuggestion(GiftSuggestionPutDto giftSuggestionPutDto)
         {
-            var giftSuggestionModel = _mapper.Map<GiftSuggestion>(giftSuggestionCreateDto);
-            _repository.CreateGiftSuggestion(giftSuggestionModel);
-            _repository.SaveChanges();
+            var giftSuggestionModel = _mapper.Map<GiftSuggestion>(giftSuggestionPutDto);
+            await _repository.CreateAsync(giftSuggestionModel);
 
             var giftSuggestionReadDto = _mapper.Map<GiftSuggestionReadDto>(giftSuggestionModel);
 
@@ -73,17 +72,17 @@ namespace GiftSuggestionService.Controllers
                 Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
             }
 
-            //Send Async Message
-            try
-            {
-                var giftSuggestionPublishedDto = _mapper.Map<GiftSuggestionPublishedDto>(giftSuggestionReadDto);
-                giftSuggestionPublishedDto.Event = "GiftSuggestion_Published";
-                _messageBusClient.PublishNewGiftSuggestion(giftSuggestionPublishedDto);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
-            }
+            //Send Async Message TODO: not supported yet
+            // try
+            // {
+            //     var giftSuggestionPublishedDto = _mapper.Map<GiftSuggestionPublishedDto>(giftSuggestionReadDto);
+            //     giftSuggestionPublishedDto.Event = "GiftSuggestion_Published";
+            //     _messageBusClient.PublishNewGiftSuggestion(giftSuggestionPublishedDto);
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
+            // }
 
             return CreatedAtRoute(nameof(GetGiftSuggestionById), new { Id = giftSuggestionReadDto.Id }, giftSuggestionReadDto);
         }

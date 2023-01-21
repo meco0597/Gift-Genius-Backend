@@ -4,6 +4,6 @@ namespace GiftSuggestionService.AsyncDataServices
 {
     public interface IMessageBusClient
     {
-        void PublishNewGiftSuggestion(GiftSuggestionPublishedDto giftSuggestionPublishedDto);
+        void PublishNewGiftSuggestion(GiftSuggestionPutDto giftSuggestionPublishedDto);
     }
 }

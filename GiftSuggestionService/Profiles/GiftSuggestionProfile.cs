@@ -10,8 +10,7 @@ namespace GiftSuggestionService.Profiles
         {
             // Source -> Target
             CreateMap<GiftSuggestion, GiftSuggestionReadDto>();
-            CreateMap<GiftSuggestionCreateDto, GiftSuggestion>();
-            CreateMap<GiftSuggestionReadDto, GiftSuggestionPublishedDto>();
+            CreateMap<GiftSuggestionPutDto, GiftSuggestion>();
         }
     }
 }
