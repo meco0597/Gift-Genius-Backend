@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using GiftSuggestionService.AsyncDataServices;
 using GiftSuggestionService.Data;
+using GiftSuggestionService.Services;
 using GiftSuggestionService.SyncDataServices.Http;
 using GiftSuggestionService.Configurations;
 
@@ -34,8 +35,10 @@ namespace GiftSuggestionService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IGiftSuggestionRepo, GiftSuggestionRepo>();
+            services.AddSingleton<IGiftSuggestionRepo, GiftSuggestionRepo>();
+            services.AddSingleton<KeyvaultAccessorService>();
             services.Configure<Dbconfiguration>(Configuration.GetSection("GiftSuggestionsDatabase"));
+            services.Configure<KeyvaultConfiguration>(Configuration.GetSection("Keyvault"));
 
             //services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddControllers();
@@ -62,7 +65,7 @@ namespace GiftSuggestionService
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //sapp.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

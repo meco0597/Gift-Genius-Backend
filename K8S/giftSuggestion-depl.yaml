@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: giftSuggestionservice
-          image: binarythistle/giftSuggestionservice:latest
+          image: meco0597/giftSuggestionservice:latest
 ---
 apiVersion: v1
 kind: Service

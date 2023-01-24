@@ -7,7 +7,7 @@ namespace GiftSuggestionService.Dtos
 
     public class GiftSuggestionReadDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string GiftName { get; set; }
 
@@ -18,8 +18,6 @@ namespace GiftSuggestionService.Dtos
         public int MinPrice { get; set; }
 
         public int MaxPrice { get; set; }
-
-        public GiftKind GiftKind { get; set; }
 
         public string GiftDescription { get; set; }
 

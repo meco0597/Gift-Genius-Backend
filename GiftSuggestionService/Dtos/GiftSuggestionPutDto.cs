@@ -8,17 +8,11 @@ namespace GiftSuggestionService.Dtos
 
     public class GiftSuggestionPutDto
     {
-        public Guid? Id { get; set; }
-
         public string GiftName { get; set; }
-
-        public Uri Link { get; set; }
 
         public int MinPrice { get; set; }
 
         public int MaxPrice { get; set; }
-
-        public GiftKind GiftKind { get; set; }
 
         public string GiftDescription { get; set; }
 

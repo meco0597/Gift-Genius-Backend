@@ -8,6 +8,7 @@ using GiftSuggestionService.Data;
 using GiftSuggestionService.Dtos;
 using GiftSuggestionService.Models;
 using GiftSuggestionService.SyncDataServices.Http;
+using GiftSuggestionService.Utilities;
 
 namespace GiftSuggestionService.Controllers
 {
@@ -17,35 +18,29 @@ namespace GiftSuggestionService.Controllers
     {
         private readonly IGiftSuggestionRepo _repository;
         private readonly IMapper _mapper;
-        private readonly ICommandDataClient _commandDataClient;
-        private readonly IMessageBusClient _messageBusClient;
 
         public GiftSuggestionsController(
             IGiftSuggestionRepo repository,
-            IMapper mapper,
-            ICommandDataClient commandDataClient,
-            IMessageBusClient messageBusClient)
+            IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _commandDataClient = commandDataClient;
-            _messageBusClient = messageBusClient;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<GiftSuggestionReadDto>> GetGiftSuggestions()
+        public async Task<ActionResult<IEnumerable<GiftSuggestionReadDto>>> GetGiftSuggestions()
         {
             Console.WriteLine("--> Getting GiftSuggestions....");
 
-            var giftSuggestionItem = _repository.GetAsync();
+            var giftSuggestionItem = await _repository.GetAsync();
 
             return Ok(_mapper.Map<IEnumerable<GiftSuggestionReadDto>>(giftSuggestionItem));
         }
 
         [HttpGet("{id}", Name = "GetGiftSuggestionById")]
-        public ActionResult<GiftSuggestionReadDto> GetGiftSuggestionById(Guid id)
+        public async Task<ActionResult<GiftSuggestionReadDto>> GetGiftSuggestionById(string id)
         {
-            var giftSuggestionItem = _repository.GetAsync(id);
+            var giftSuggestionItem = await _repository.GetAsync(id);
             if (giftSuggestionItem != null)
             {
                 return Ok(_mapper.Map<GiftSuggestionReadDto>(giftSuggestionItem));
@@ -54,35 +49,44 @@ namespace GiftSuggestionService.Controllers
             return NotFound();
         }
 
-        [HttpPost]
+        [HttpPost("{id}", Name = "PostIncrementNumOfUpvotes")]
+        public async Task<ActionResult<GiftSuggestionReadDto>> IncrementNumOfUpvotes(string id)
+        {
+            var retrievedGiftSuggestion = await _repository.GetAsync(id);
+            if (retrievedGiftSuggestion != null)
+            {
+                retrievedGiftSuggestion.NumOfUpvotes = retrievedGiftSuggestion.NumOfUpvotes + 1;
+                await _repository.UpdateAsync(id, retrievedGiftSuggestion);
+                return Ok(_mapper.Map<GiftSuggestionReadDto>(retrievedGiftSuggestion));
+            }
+
+            return NotFound();
+        }
+
+        [HttpPut]
         public async Task<ActionResult<GiftSuggestionReadDto>> CreateGiftSuggestion(GiftSuggestionPutDto giftSuggestionPutDto)
         {
             var giftSuggestionModel = _mapper.Map<GiftSuggestion>(giftSuggestionPutDto);
-            await _repository.CreateAsync(giftSuggestionModel);
 
-            var giftSuggestionReadDto = _mapper.Map<GiftSuggestionReadDto>(giftSuggestionModel);
+            string id = GiftSuggestionUtilities.GenerateGiftSuggestionIdFromName(giftSuggestionPutDto.GiftName);
+            var retrievedGiftSuggestion = await _repository.GetAsync(id);
 
-            // Send Sync Message
-            try
+            GiftSuggestionReadDto giftSuggestionReadDto;
+            // Create
+            if (retrievedGiftSuggestion == null)
             {
-                await _commandDataClient.SendGiftSuggestionToCommand(giftSuggestionReadDto);
+                await _repository.CreateAsync(giftSuggestionModel);
+                giftSuggestionReadDto = _mapper.Map<GiftSuggestionReadDto>(giftSuggestionModel);
             }
-            catch (Exception ex)
+            // Update
+            else
             {
-                Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
+                giftSuggestionModel.NumOfUpvotes = retrievedGiftSuggestion.NumOfUpvotes;
+                await _repository.UpdateAsync(id, giftSuggestionModel);
+                giftSuggestionReadDto = _mapper.Map<GiftSuggestionReadDto>(giftSuggestionModel);
             }
 
-            //Send Async Message TODO: not supported yet
-            // try
-            // {
-            //     var giftSuggestionPublishedDto = _mapper.Map<GiftSuggestionPublishedDto>(giftSuggestionReadDto);
-            //     giftSuggestionPublishedDto.Event = "GiftSuggestion_Published";
-            //     _messageBusClient.PublishNewGiftSuggestion(giftSuggestionPublishedDto);
-            // }
-            // catch (Exception ex)
-            // {
-            //     Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
-            // }
+            // TODO: Send Sync/Async Message
 
             return CreatedAtRoute(nameof(GetGiftSuggestionById), new { Id = giftSuggestionReadDto.Id }, giftSuggestionReadDto);
         }

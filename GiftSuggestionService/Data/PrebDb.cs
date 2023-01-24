@@ -28,12 +28,11 @@ namespace GiftSuggestionService.Data
                 repo.CreateAsync(
                     new GiftSuggestion()
                     {
-                        Id = Guid.NewGuid(),
+                        Id = "golf-putter",
                         GiftName = "Golf Putter",
                         CreatedAt = System.DateTime.Now,
                         MinPrice = 80,
                         MaxPrice = 250,
-                        GiftKind = GiftKind.RetailItem,
                         GiftDescription = "They will take 4 strokes off their handicap with a new putter!",
                         AssociatedInterests = new List<string>() { "golf", "sports" },
                         AssociatedOccasions = new List<string>() { "birthday", "christmas" },
@@ -43,12 +42,11 @@ namespace GiftSuggestionService.Data
                     });
                 repo.CreateAsync(new GiftSuggestion()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = "surf-wetsuit",
                     GiftName = "Surf Wetsuit",
                     CreatedAt = System.DateTime.Now,
                     MinPrice = 100,
                     MaxPrice = 350,
-                    GiftKind = GiftKind.RetailItem,
                     GiftDescription = "They will stay warm in the cold waters!",
                     AssociatedInterests = new List<string>() { "surf", "sports" },
                     AssociatedOccasions = new List<string>() { "birthday", "christmas" },
@@ -58,12 +56,11 @@ namespace GiftSuggestionService.Data
                 });
                 repo.CreateAsync(new GiftSuggestion()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = "scrap-book",
                     GiftName = "Scrap Book",
                     CreatedAt = System.DateTime.Now,
                     MinPrice = 5,
                     MaxPrice = 25,
-                    GiftKind = GiftKind.DIY,
                     GiftDescription = "They will get to cherish your memories together",
                     AssociatedInterests = new List<string>() { "" },
                     AssociatedOccasions = new List<string>() { "birthday", "valentines" },

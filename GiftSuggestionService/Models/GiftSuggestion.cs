@@ -8,31 +8,28 @@ namespace GiftSuggestionService.Models
 {
     public class GiftSuggestion
     {
-        [BsonId]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
-        public string GiftName { get; set; } = null!;
+        public string GiftName { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
 
-        public Uri Link { get; set; } = null!;
+        public Uri Link { get; set; }
 
-        public int MinPrice { get; set; } = 0;
+        public int MinPrice { get; set; }
 
-        public int MaxPrice { get; set; } = int.MaxValue;
+        public int MaxPrice { get; set; }
 
-        public GiftKind GiftKind { get; set; } = GiftKind.RetailItem;
+        public string GiftDescription { get; set; }
 
-        public string GiftDescription { get; set; } = null!;
+        public List<string> AssociatedInterests { get; set; }
 
-        public List<string> AssociatedInterests { get; set; } = null!;
+        public List<string> AssociatedOccasions { get; set; }
 
-        public List<string> AssociatedOccasions { get; set; } = null!;
+        public List<string> AssociatedSex { get; set; }
 
-        public List<string> AssociatedSex { get; set; } = null!;
+        public List<int> AssociatedAgeRanges { get; set; }
 
-        public List<int> AssociatedAgeRanges { get; set; } = null!;
-
-        public long NumOfUpvotes { get; set; } = 0;
+        public long NumOfUpvotes { get; set; }
     }
 }

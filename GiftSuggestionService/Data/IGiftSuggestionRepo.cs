@@ -9,12 +9,12 @@ namespace GiftSuggestionService.Data
     {
         public Task<List<GiftSuggestion>> GetAsync();
 
-        public Task<GiftSuggestion> GetAsync(Guid id);
+        public Task<GiftSuggestion> GetAsync(string id);
 
         public Task CreateAsync(GiftSuggestion newGiftSuggestion);
 
-        public Task UpdateAsync(Guid id, GiftSuggestion updatedGiftSuggestion);
+        public Task UpdateAsync(string id, GiftSuggestion updatedGiftSuggestion);
 
-        public Task RemoveAsync(Guid id);
+        public Task RemoveAsync(string id);
     }
 }
