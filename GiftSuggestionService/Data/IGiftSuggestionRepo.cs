@@ -1,12 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GiftSuggestionService.Models;
-
 namespace GiftSuggestionService.Data
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using GiftSuggestionService.Models;
+    using GiftSuggestionService.Dtos;
+
     public interface IGiftSuggestionRepo
     {
+        public Task<List<GiftSuggestion>> GetBySearchParameters(GiftSuggestionSearchDto searchParams);
+
         public Task<List<GiftSuggestion>> GetAsync();
 
         public Task<GiftSuggestion> GetAsync(string id);

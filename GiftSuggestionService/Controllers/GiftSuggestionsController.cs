@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using GiftSuggestionService.AsyncDataServices;
 using GiftSuggestionService.Data;
 using GiftSuggestionService.Dtos;
 using GiftSuggestionService.Models;
-using GiftSuggestionService.SyncDataServices.Http;
 using GiftSuggestionService.Utilities;
 
 namespace GiftSuggestionService.Controllers
@@ -30,8 +28,6 @@ namespace GiftSuggestionService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GiftSuggestionReadDto>>> GetGiftSuggestions()
         {
-            Console.WriteLine("--> Getting GiftSuggestions....");
-
             var giftSuggestionItem = await _repository.GetAsync();
 
             return Ok(_mapper.Map<IEnumerable<GiftSuggestionReadDto>>(giftSuggestionItem));
@@ -44,6 +40,18 @@ namespace GiftSuggestionService.Controllers
             if (giftSuggestionItem != null)
             {
                 return Ok(_mapper.Map<GiftSuggestionReadDto>(giftSuggestionItem));
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost(Name = "GetGiftSuggestionBySearchParameters")]
+        public async Task<ActionResult<IEnumerable<GiftSuggestionReadDto>>> PostGiftSuggestionById(GiftSuggestionSearchDto searchParams)
+        {
+            var giftSuggestionItem = await _repository.GetBySearchParameters(searchParams);
+            if (giftSuggestionItem != null && giftSuggestionItem.Count != 0)
+            {
+                return Ok(_mapper.Map<IEnumerable<GiftSuggestionReadDto>>(giftSuggestionItem));
             }
 
             return NotFound();
