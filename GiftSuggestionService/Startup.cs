@@ -37,8 +37,11 @@ namespace GiftSuggestionService
         {
             services.AddSingleton<IGiftSuggestionRepo, GiftSuggestionRepo>();
             services.AddSingleton<KeyvaultAccessorService>();
+            services.AddSingleton<GptManagementService>();
             services.Configure<Dbconfiguration>(Configuration.GetSection("GiftSuggestionsDatabase"));
             services.Configure<KeyvaultConfiguration>(Configuration.GetSection("Keyvault"));
+            services.Configure<EnivronmentConfiguration>(Configuration.GetSection("Environment"));
+            services.Configure<GptConfiguration>(Configuration.GetSection("GptCongiguration"));
 
             //services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddControllers();

@@ -81,6 +81,61 @@ namespace GiftSuggestionService.Data
             return await this.giftSuggestionsCollection.Find(filter).ToListAsync();
         }
 
+        public async Task<GiftSuggestion> CreateOrUpdateAsync(GiftSuggestion giftSuggestion)
+        {
+            string id = GiftSuggestionUtilities.GenerateGiftSuggestionIdFromName(giftSuggestion.GiftName);
+            var exisitingGiftSuggestion = await this.GetAsync(id);
+            if (exisitingGiftSuggestion == null)
+            {
+                // create
+                GiftSuggestion createdGiftSuggestion = new GiftSuggestion()
+                {
+                    Id = id,
+                    GiftName = giftSuggestion.GiftName,
+                    GiftDescription = giftSuggestion.GiftDescription,
+                    CreatedAt = DateTime.Now,
+                    MinPrice = giftSuggestion.MinPrice,
+                    MaxPrice = giftSuggestion.MaxPrice,
+                    AssociatedInterests = giftSuggestion.AssociatedInterests,
+                    AssociatedAgeRanges = giftSuggestion.AssociatedAgeRanges,
+                    AssociatedOccasions = giftSuggestion.AssociatedOccasions,
+                    AssociatedSex = giftSuggestion.AssociatedSex,
+                    NumOfUpvotes = 0,
+                    NumOfClicks = 0,
+                    NumOfTimesSuggested = 1,
+                };
+
+                await this.CreateAsync(createdGiftSuggestion);
+                return createdGiftSuggestion;
+            }
+            else
+            {
+                exisitingGiftSuggestion.AssociatedInterests.AddRange(giftSuggestion.AssociatedInterests);
+                exisitingGiftSuggestion.AssociatedAgeRanges.AddRange(giftSuggestion.AssociatedAgeRanges);
+                exisitingGiftSuggestion.AssociatedOccasions.AddRange(giftSuggestion.AssociatedOccasions);
+                exisitingGiftSuggestion.AssociatedSex.AddRange(giftSuggestion.AssociatedSex);
+                // update 
+                GiftSuggestion updatedGiftSuggestion = new GiftSuggestion()
+                {
+                    GiftName = exisitingGiftSuggestion.GiftName,
+                    GiftDescription = exisitingGiftSuggestion.GiftDescription,
+                    CreatedAt = exisitingGiftSuggestion.CreatedAt,
+                    MinPrice = Math.Min(giftSuggestion.MinPrice, exisitingGiftSuggestion.MinPrice),
+                    MaxPrice = Math.Min(giftSuggestion.MaxPrice, exisitingGiftSuggestion.MaxPrice),
+                    AssociatedInterests = exisitingGiftSuggestion.AssociatedInterests,
+                    AssociatedAgeRanges = exisitingGiftSuggestion.AssociatedAgeRanges,
+                    AssociatedOccasions = exisitingGiftSuggestion.AssociatedOccasions,
+                    AssociatedSex = exisitingGiftSuggestion.AssociatedSex,
+                    NumOfUpvotes = exisitingGiftSuggestion.NumOfUpvotes,
+                    NumOfClicks = exisitingGiftSuggestion.NumOfClicks,
+                    NumOfTimesSuggested = exisitingGiftSuggestion.NumOfTimesSuggested + 1,
+                };
+
+                await this.UpdateAsync(id, updatedGiftSuggestion);
+                return updatedGiftSuggestion;
+            }
+        }
+
         public async Task<List<GiftSuggestion>> GetAsync() =>
             await this.giftSuggestionsCollection.Find(_ => true).ToListAsync();
 

@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 
 namespace GiftSuggestionService.Models
 {
@@ -31,5 +28,10 @@ namespace GiftSuggestionService.Models
         public List<int> AssociatedAgeRanges { get; set; }
 
         public long NumOfUpvotes { get; set; }
+
+        public long NumOfClicks { get; set; }
+
+        public long NumOfTimesSuggested { get; set; }
+
     }
 }

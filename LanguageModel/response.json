@@ -1,26 +1,82 @@
 [
     {
-        "giftIdea": "Cookbook by a celebrity chef",
+        "giftIdea": "Soccer ball",
         "giftCategories": [
-            "cooking"
+            "soccer"
         ],
-        "priceRange": "25-50",
-        "giftDescription": "This gift will allow them to explore unique cooking recipes!"
+        "estimatedPrice": "15-25",
+        "giftDescription": "A classic gift for any young soccer fan that they can use to practice their skills or play with friends."
     },
     {
-        "giftIdea": "Singing lesson gift certificate",
+        "giftIdea": "Skateboard",
         "giftCategories": [
-            "singing"
+            "skateboarding"
         ],
-        "priceRange": "25-50",
-        "giftDescription": "They will get to enhance their singing skills."
+        "estimatedPrice": "20-30",
+        "giftDescription": "A perfect gift for the young skateboarding enthusiast to start their adventures on the board."
     },
     {
-        "giftIdea": "Kitchen knife set",
+        "giftIdea": "Fortnite T-Shirt",
         "giftCategories": [
-            "cooking"
+            "Fortnite"
         ],
-        "priceRange": "60-80",
-        "giftDescription": "It will make their life in the kitchen much easier."
+        "estimatedPrice": "15-20",
+        "giftDescription": "A stylish and trendy t-shirt featuring popular Fortnite characters and themes. A perfect gift for any Fortnite fan."
+    },
+    {
+        "giftIdea": "Soccer Goal Set",
+        "giftCategories": [
+            "soccer"
+        ],
+        "estimatedPrice": "25-30",
+        "giftDescription": "A compact and portable soccer goal set that they can set up in the backyard or park to play with friends."
+    },
+    {
+        "giftIdea": "Skateboarding Stickers",
+        "giftCategories": [
+            "skateboarding"
+        ],
+        "estimatedPrice": "5-10",
+        "giftDescription": "A fun and affordable way to show off their skateboarding style and personality."
+    },
+    {
+        "giftIdea": "Soccer Jersey",
+        "giftCategories": [
+            "soccer"
+        ],
+        "estimatedPrice": "20-25",
+        "giftDescription": "A classic gift for any young soccer fan, they can show support for their favorite team with a stylish jersey."
+    },
+    {
+        "giftIdea": "Skateboarding Grip Tape",
+        "giftCategories": [
+            "skateboarding"
+        ],
+        "estimatedPrice": "5-10",
+        "giftDescription": "A practical and essential gift for any young skateboarder, to add grip to their board for better control."
+    },
+    {
+        "giftIdea": "Fortnite Backpack",
+        "giftCategories": [
+            "Fortnite"
+        ],
+        "estimatedPrice": "20-30",
+        "giftDescription": "A practical and stylish backpack featuring popular Fortnite characters and themes. Perfect for school or trips."
+    },
+    {
+        "giftIdea": "Soccer Training Cones",
+        "giftCategories": [
+            "soccer"
+        ],
+        "estimatedPrice": "10-15",
+        "giftDescription": "A simple and affordable training tool that they can use to improve their dribbling and agility skills."
+    },
+    {
+        "giftIdea": "Skateboarding Magazine Subscription",
+        "giftCategories": [
+            "skateboarding"
+        ],
+        "estimatedPrice": "15-30",
+        "giftDescription": "A ."
     }
 ]

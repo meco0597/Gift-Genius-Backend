@@ -13,6 +13,8 @@ namespace GiftSuggestionService.Data
 
         public Task<GiftSuggestion> GetAsync(string id);
 
+        public Task<GiftSuggestion> CreateOrUpdateAsync(GiftSuggestion giftSuggestion);
+
         public Task CreateAsync(GiftSuggestion newGiftSuggestion);
 
         public Task UpdateAsync(string id, GiftSuggestion updatedGiftSuggestion);
