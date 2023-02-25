@@ -1,7 +1,6 @@
 namespace GiftSuggestionService.Dtos
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using GiftSuggestionService.Models;
 
@@ -13,7 +12,9 @@ namespace GiftSuggestionService.Dtos
 
         public DateTime CreatedAt { get; set; }
 
-        public Uri Link { get; set; }
+        public string Link { get; set; }
+
+        public string ThumbnailUrl { get; set; }
 
         public int MinPrice { get; set; }
 
@@ -23,11 +24,9 @@ namespace GiftSuggestionService.Dtos
 
         public List<string> AssociatedInterests { get; set; }
 
-        public List<string> AssociatedOccasions { get; set; }
+        public List<RelationshipDescriptor> AssociatedRelationships { get; set; }
 
-        public List<string> AssociatedSex { get; set; }
-
-        public List<int> AssociatedAgeRanges { get; set; }
+        public List<AgeDescriptor> AssociatedAgeRanges { get; set; }
 
         public long NumOfUpvotes { get; set; }
     }

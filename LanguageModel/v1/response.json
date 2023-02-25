@@ -1,0 +1,45 @@
+[
+    {
+        "giftIdea": "Surfboard",
+        "giftCategories": [
+            "surf",
+            "sports",
+            "outdoors"
+        ],
+        "estimatedPrice": "200-355",
+        "giftDescription": "A board used for surfing, which is a surface water sport in which the wave rider, referred to as a surfer, rides on the forward or deep face of a moving wave. This gift will allow them to explore the waves and enjoy the outdoors."
+    },
+    {
+        "giftIdea": "Sports Watch",
+        "giftCategories": [
+            "sports"
+        ],
+        "estimatedPrice": "100-200",
+        "giftDescription": "A watch designed for athletes and outdoor enthusiasts that can track their performance and provide feedback on their progress. This gift will help them stay motivated and reach their goals."
+    },
+    {
+        "giftIdea": "Outdoor Chair Set",
+        "giftCategories": [
+            "outdoors"
+        ],
+        "estimatedPrice": "100-150",
+        "giftDescription": "A set of chairs designed for outdoor use, perfect for camping trips or backyard barbecues. This gift will provide comfort and convenience when enjoying the outdoors."
+    },
+    {
+        "giftIdea": "Surf Wax Kit",
+        "giftCategories": [
+            "surf",
+            "sports",
+            "outdoors"
+        ],
+        "estimatedPrice": "25-50",
+        "giftDescription": "A kit containing waxes specifically designed for surfboards. This gift will help them keep their board in top condition and make sure they get the most out of every wave."
+    },
+    {
+        "giftIdea": "Outdoor Cooking Set ",
+        "giftCategories": [
+            "cooking",
+            "outdoors"
+        ],       estimatedPrice":"50-100 ",       giftDescription": "A set of cooking utensils designed for outdoor use, perfect for camping trips or backyard barbecues. This gift will allow them to explore new recipes while enjoying the outdoors."
+    }
+]

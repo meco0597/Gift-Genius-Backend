@@ -1,23 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using GiftSuggestionService.AsyncDataServices;
 using GiftSuggestionService.Data;
 using GiftSuggestionService.Services;
-using GiftSuggestionService.SyncDataServices.Http;
 using GiftSuggestionService.Configurations;
 
 namespace GiftSuggestionService
@@ -38,10 +27,12 @@ namespace GiftSuggestionService
             services.AddSingleton<IGiftSuggestionRepo, GiftSuggestionRepo>();
             services.AddSingleton<KeyvaultAccessorService>();
             services.AddSingleton<GptManagementService>();
+            services.AddSingleton<AmazonProductManagementService>();
             services.Configure<Dbconfiguration>(Configuration.GetSection("GiftSuggestionsDatabase"));
             services.Configure<KeyvaultConfiguration>(Configuration.GetSection("Keyvault"));
             services.Configure<EnivronmentConfiguration>(Configuration.GetSection("Environment"));
             services.Configure<GptConfiguration>(Configuration.GetSection("GptCongiguration"));
+            services.Configure<AmazonProductConfiguration>(Configuration.GetSection("AmazonProductConfiguration"));
 
             //services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddControllers();

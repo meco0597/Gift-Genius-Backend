@@ -19,6 +19,12 @@ namespace GiftSuggestionService.Models
         [JsonProperty("top_p")]
         public double TopP { get; set; }
 
+        [JsonProperty("frequency_penalty")]
+        public double FrequencyPenalty { get; set; }
+
+        [JsonProperty("presence_penalty")]
+        public double PresencePenalty { get; set; }
+
         [JsonProperty("n")]
         public int N { get; set; }
 

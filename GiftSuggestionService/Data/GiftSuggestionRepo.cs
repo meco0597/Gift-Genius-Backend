@@ -61,21 +61,15 @@ namespace GiftSuggestionService.Data
 
             if (searchParams.AssociatedAge != null)
             {
-                int normalizedAge = GiftSuggestionUtilities.NormalizeAge((int)searchParams.AssociatedAge);
-                var ageFilter = filterBuilder.AnyEq(x => x.AssociatedAgeRanges, normalizedAge);
+                var ageRanges = GiftSuggestionUtilities.GetNearbyAges((AgeDescriptor)searchParams.AssociatedAge);
+                var ageFilter = filterBuilder.AnyIn(x => x.AssociatedAgeRanges, ageRanges);
                 filter &= ageFilter;
             }
 
-            if (searchParams.AssociatedOccasion != null)
+            if (searchParams.AssociatedRelationship != null)
             {
-                var occasionFilter = filterBuilder.AnyEq(x => x.AssociatedOccasions, searchParams.AssociatedOccasion);
-                filter &= occasionFilter;
-            }
-
-            if (searchParams.AssociatedSex != null)
-            {
-                var sexFilter = filterBuilder.AnyEq(x => x.AssociatedSex, searchParams.AssociatedSex);
-                filter &= sexFilter;
+                var relationshipFilter = filterBuilder.AnyEq(x => x.AssociatedRelationships, (RelationshipDescriptor)searchParams.AssociatedRelationship);
+                filter &= relationshipFilter;
             }
 
             return await this.giftSuggestionsCollection.Find(filter).ToListAsync();
@@ -94,12 +88,13 @@ namespace GiftSuggestionService.Data
                     GiftName = giftSuggestion.GiftName,
                     GiftDescription = giftSuggestion.GiftDescription,
                     CreatedAt = DateTime.Now,
+                    Link = giftSuggestion.Link,
+                    ThumbnailUrl = giftSuggestion.ThumbnailUrl,
                     MinPrice = giftSuggestion.MinPrice,
                     MaxPrice = giftSuggestion.MaxPrice,
                     AssociatedInterests = giftSuggestion.AssociatedInterests,
                     AssociatedAgeRanges = giftSuggestion.AssociatedAgeRanges,
-                    AssociatedOccasions = giftSuggestion.AssociatedOccasions,
-                    AssociatedSex = giftSuggestion.AssociatedSex,
+                    AssociatedRelationships = giftSuggestion.AssociatedRelationships,
                     NumOfUpvotes = 0,
                     NumOfClicks = 0,
                     NumOfTimesSuggested = 1,
@@ -112,20 +107,20 @@ namespace GiftSuggestionService.Data
             {
                 exisitingGiftSuggestion.AssociatedInterests.AddRange(giftSuggestion.AssociatedInterests);
                 exisitingGiftSuggestion.AssociatedAgeRanges.AddRange(giftSuggestion.AssociatedAgeRanges);
-                exisitingGiftSuggestion.AssociatedOccasions.AddRange(giftSuggestion.AssociatedOccasions);
-                exisitingGiftSuggestion.AssociatedSex.AddRange(giftSuggestion.AssociatedSex);
+                exisitingGiftSuggestion.AssociatedRelationships.AddRange(giftSuggestion.AssociatedRelationships);
                 // update 
                 GiftSuggestion updatedGiftSuggestion = new GiftSuggestion()
                 {
                     GiftName = exisitingGiftSuggestion.GiftName,
                     GiftDescription = exisitingGiftSuggestion.GiftDescription,
                     CreatedAt = exisitingGiftSuggestion.CreatedAt,
+                    Link = exisitingGiftSuggestion.Link,
+                    ThumbnailUrl = exisitingGiftSuggestion.ThumbnailUrl,
                     MinPrice = Math.Min(giftSuggestion.MinPrice, exisitingGiftSuggestion.MinPrice),
                     MaxPrice = Math.Min(giftSuggestion.MaxPrice, exisitingGiftSuggestion.MaxPrice),
                     AssociatedInterests = exisitingGiftSuggestion.AssociatedInterests,
                     AssociatedAgeRanges = exisitingGiftSuggestion.AssociatedAgeRanges,
-                    AssociatedOccasions = exisitingGiftSuggestion.AssociatedOccasions,
-                    AssociatedSex = exisitingGiftSuggestion.AssociatedSex,
+                    AssociatedRelationships = exisitingGiftSuggestion.AssociatedRelationships,
                     NumOfUpvotes = exisitingGiftSuggestion.NumOfUpvotes,
                     NumOfClicks = exisitingGiftSuggestion.NumOfClicks,
                     NumOfTimesSuggested = exisitingGiftSuggestion.NumOfTimesSuggested + 1,

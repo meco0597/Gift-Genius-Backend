@@ -8,6 +8,7 @@ using GiftSuggestionService.Dtos;
 using GiftSuggestionService.Models;
 using GiftSuggestionService.Services;
 using GiftSuggestionService.Utilities;
+using System.Linq;
 
 namespace GiftSuggestionService.Controllers
 {
@@ -16,15 +17,18 @@ namespace GiftSuggestionService.Controllers
     public class GiftSuggestionsController : ControllerBase
     {
         private readonly GptManagementService gptManagementService;
+        private readonly AmazonProductManagementService amazonProductManagementService;
         private readonly IGiftSuggestionRepo repository;
         private readonly IMapper mapper;
 
         public GiftSuggestionsController(
             GptManagementService gptManagementService,
+            AmazonProductManagementService amazonProductManagementService,
             IGiftSuggestionRepo repository,
             IMapper mapper)
         {
             this.gptManagementService = gptManagementService;
+            this.amazonProductManagementService = amazonProductManagementService;
             this.repository = repository;
             this.mapper = mapper;
         }
@@ -58,11 +62,19 @@ namespace GiftSuggestionService.Controllers
             giftSuggestions = await this.repository.GetBySearchParameters(searchParams);
             if (giftSuggestions == null || giftSuggestions.Count < 10)
             {
-                var generatedGiftSuggestions = this.gptManagementService.GetGiftSuggestions(searchParams, numOfGiftSuggestionsToReturn);
+                var generatedGiftSuggestions = await this.gptManagementService.GetGiftSuggestions(searchParams);
                 giftSuggestions = new List<GiftSuggestion>();
+
+                var queryProductMapping = this.amazonProductManagementService.GetAmazonProductDetailsFromListOfQueries(generatedGiftSuggestions.Select(x => x.Name).ToList()).Result;
+
                 generatedGiftSuggestions.ForEach(x =>
                 {
                     var giftSuggestion = x.ToPrivateModel(searchParams);
+                    var amazonDetails = queryProductMapping[x.Name].Result;
+
+                    giftSuggestion.Link = amazonDetails.Url;
+                    giftSuggestion.ThumbnailUrl = amazonDetails.ThumbnailUrl;
+
                     var createdGiftSuggestion = this.repository.CreateOrUpdateAsync(giftSuggestion).Result;
                     giftSuggestions.Add(createdGiftSuggestion);
                 });
@@ -87,8 +99,6 @@ namespace GiftSuggestionService.Controllers
             var giftSuggestion = await this.repository.CreateOrUpdateAsync(giftSuggestionModel);
 
             var giftSuggestionReadDto = mapper.Map<GiftSuggestionReadDto>(giftSuggestion);
-
-            // TODO: Send Sync/Async Message
 
             return CreatedAtRoute(nameof(GetGiftSuggestionById), new { Id = giftSuggestionReadDto.Id }, giftSuggestionReadDto);
         }

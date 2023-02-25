@@ -1,6 +1,6 @@
 I am going to give you a prompt describing a recipient of a gift. Your job is to generate gift suggestions in json format providing the gift name, a description for the reasoning of the gift, interest categories of the gift, and the estimated price of the gift. An example prompt is:
 
-"5 birthday gift ideas for a 52-year-old Female with an interest in cooking and singing, between $25 and $100"
+"Give me 5 gift ideas for my Mom in her Fifties that has an interest in cooking and singing, between $25 and $100"
 
 Then you would respond in json markdown:
 
@@ -51,4 +51,4 @@ Then you would respond in json markdown:
 
 My first prompt is:
 
-"5 Valentines gift ideas for a 28-year-old female with an interest in sewing, fitness, and piano, between $75 and $150"
+"Give me 5 gift ideas for my Cousin in his twenties that has an interest in golf, NBA, La Liga between $50 and $100"

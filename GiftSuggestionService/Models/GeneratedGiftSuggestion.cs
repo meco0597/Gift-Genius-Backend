@@ -1,18 +1,37 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using GiftSuggestionService.Dtos;
 
 namespace GiftSuggestionService.Models
 {
     public class GeneratedGiftSuggestionSchema
     {
+        [JsonPropertyName("giftIdea")]
         public string Name { get; set; }
 
+        [JsonPropertyName("giftDescription")]
         public string Description { get; set; }
 
+        [JsonPropertyName("giftCategories")]
         public List<string> Categories { get; set; }
 
+        [JsonPropertyName("estimatedPrice")]
         public string EstimatedPriceRange { get; set; }
+
+        public GeneratedGiftSuggestion ToGeneratedModel(GeneratedGiftSuggestionSchema unParsed)
+        {
+            string[] minAndMax = unParsed.EstimatedPriceRange.Split("-");
+            return new GeneratedGiftSuggestion()
+            {
+                Name = unParsed.Name,
+                Description = unParsed.Description,
+                Categories = unParsed.Categories,
+                EstimatedMinPrice = Int32.Parse(minAndMax[0]),
+                EstimatedMaxPrice = Int32.Parse(minAndMax[1]),
+            };
+        }
     }
 
     public class GeneratedGiftSuggestion
@@ -29,20 +48,15 @@ namespace GiftSuggestionService.Models
 
         public GiftSuggestion ToPrivateModel(GiftSuggestionSearchDto searchParams)
         {
-            var associatedAges = new List<int>();
-            var associatedOccasions = new List<string>();
-            var associatedSexes = new List<string>();
+            var associatedAges = new List<AgeDescriptor>();
+            var associatedRelationships = new List<RelationshipDescriptor>();
             if (searchParams.AssociatedAge != null)
             {
-                associatedAges.Add((int)searchParams.AssociatedAge);
+                associatedAges.Add((AgeDescriptor)searchParams.AssociatedAge);
             }
-            if (searchParams.AssociatedOccasion != null)
+            if (searchParams.AssociatedRelationship != null)
             {
-                associatedOccasions.Add(searchParams.AssociatedOccasion);
-            }
-            if (searchParams.AssociatedSex != null)
-            {
-                associatedSexes.Add(searchParams.AssociatedSex);
+                associatedRelationships.Add((RelationshipDescriptor)searchParams.AssociatedRelationship);
             }
 
             return new GiftSuggestion()
@@ -51,8 +65,7 @@ namespace GiftSuggestionService.Models
                 GiftDescription = this.Description,
                 AssociatedInterests = this.Categories,
                 AssociatedAgeRanges = associatedAges,
-                AssociatedOccasions = associatedOccasions,
-                AssociatedSex = associatedSexes,
+                AssociatedRelationships = associatedRelationships,
                 MinPrice = this.EstimatedMinPrice,
                 MaxPrice = this.EstimatedMaxPrice,
             };

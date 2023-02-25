@@ -1,0 +1,398 @@
+{
+    "totalProducts": "5418",
+    "category": "aps",
+    "result": [
+        {
+            "position": {
+                "page": 1,
+                "position": 1,
+                "global_position": 1
+            },
+            "asin": "1948703424",
+            "price": {
+                "discounted": false,
+                "current_price": 0,
+                "currency": "USD",
+                "before_price": 0,
+                "savings_amount": 0,
+                "savings_percent": 0
+            },
+            "reviews": {
+                "total_reviews": 4471,
+                "rating": 4.8
+            },
+            "url": "https://www.amazon.com/dp/1948703424",
+            "score": "21460.80",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": false,
+            "title": "The Complete America's Test Kitchen TV Show Cookbook 2001-2021: Every Recipe from the HIt TV Show Along with Product Ratin...",
+            "thumbnail": "https://m.media-amazon.com/images/I/81CvmusBtEL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 3,
+                "global_position": 3
+            },
+            "asin": "1401600956",
+            "price": {
+                "discounted": false,
+                "current_price": 22.92,
+                "currency": "USD",
+                "before_price": 0,
+                "savings_amount": 0,
+                "savings_percent": 0
+            },
+            "reviews": {
+                "total_reviews": 30,
+                "rating": 4.4
+            },
+            "url": "https://www.amazon.com/dp/1401600956",
+            "score": "132.00",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "The Harry Caray's Restaurant Cookbook: The Official Home Plate of the Chicago Cubs",
+            "thumbnail": "https://m.media-amazon.com/images/I/91AoUAIwrdL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 4,
+                "global_position": 4
+            },
+            "asin": "0143193600",
+            "price": {
+                "discounted": true,
+                "current_price": 28.35,
+                "currency": "USD",
+                "before_price": 30,
+                "savings_amount": 1.65,
+                "savings_percent": 5.5
+            },
+            "reviews": {
+                "total_reviews": 59,
+                "rating": 4.6
+            },
+            "url": "https://www.amazon.com/dp/0143193600",
+            "score": "271.40",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": false,
+            "title": "Farm to Chef: Cooking Through the Seasons: A Cookbook",
+            "thumbnail": "https://m.media-amazon.com/images/I/91Q29b+zuiL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 5,
+                "global_position": 5
+            },
+            "asin": "0525659609",
+            "price": {
+                "discounted": true,
+                "current_price": 20.79,
+                "currency": "USD",
+                "before_price": 35,
+                "savings_amount": 14.21,
+                "savings_percent": 40.6
+            },
+            "reviews": {
+                "total_reviews": 198,
+                "rating": 4.7
+            },
+            "url": "https://www.amazon.com/dp/0525659609",
+            "score": "930.60",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "My America: Recipes from a Young Black Chef: A Cookbook",
+            "thumbnail": "https://m.media-amazon.com/images/I/91+1B5S3JYL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 6,
+                "global_position": 6
+            },
+            "asin": "1645679004",
+            "price": {
+                "discounted": true,
+                "current_price": 16.79,
+                "currency": "USD",
+                "before_price": 22.99,
+                "savings_amount": 6.2,
+                "savings_percent": 26.97
+            },
+            "reviews": {
+                "total_reviews": 144,
+                "rating": 4.8
+            },
+            "url": "https://www.amazon.com/dp/1645679004",
+            "score": "691.20",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "New Keto: Dinner in 30: Super Easy and Affordable Recipes for a Healthier Lifestyle",
+            "thumbnail": "https://m.media-amazon.com/images/I/81xFnq8UoqL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 7,
+                "global_position": 7
+            },
+            "asin": "0553459767",
+            "price": {
+                "discounted": false,
+                "current_price": 12.99,
+                "currency": "USD",
+                "before_price": 0,
+                "savings_amount": 0,
+                "savings_percent": 0
+            },
+            "reviews": {
+                "total_reviews": 269,
+                "rating": 4.7
+            },
+            "url": "https://www.amazon.com/dp/0553459767",
+            "score": "1264.30",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": false,
+            "title": "Kristen Kish Cooking: Recipes and Techniques: A Cookbook",
+            "thumbnail": "https://m.media-amazon.com/images/I/81tDIfsqbIL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 8,
+                "global_position": 8
+            },
+            "asin": "1609615123",
+            "price": {
+                "discounted": false,
+                "current_price": 27.99,
+                "currency": "USD",
+                "before_price": 0,
+                "savings_amount": 0,
+                "savings_percent": 0
+            },
+            "reviews": {
+                "total_reviews": 618,
+                "rating": 4.6
+            },
+            "url": "https://www.amazon.com/dp/1609615123",
+            "score": "2842.80",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "MasterChef: The Ultimate Cookbook",
+            "thumbnail": "https://m.media-amazon.com/images/I/91zbTCVWKSL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 9,
+                "global_position": 9
+            },
+            "asin": "1984825836",
+            "price": {
+                "discounted": true,
+                "current_price": 28.99,
+                "currency": "USD",
+                "before_price": 35,
+                "savings_amount": 6.01,
+                "savings_percent": 17.17
+            },
+            "reviews": {
+                "total_reviews": 1235,
+                "rating": 4.8
+            },
+            "url": "https://www.amazon.com/dp/1984825836",
+            "score": "5928.00",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "Cook Real Hawai'i: A Cookbook",
+            "thumbnail": "https://m.media-amazon.com/images/I/A17PHCLb+HL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 10,
+                "global_position": 10
+            },
+            "asin": "059323183X",
+            "price": {
+                "discounted": true,
+                "current_price": 26,
+                "currency": "USD",
+                "before_price": 32.5,
+                "savings_amount": 6.5,
+                "savings_percent": 20
+            },
+            "reviews": {
+                "total_reviews": 1625,
+                "rating": 4.7
+            },
+            "url": "https://www.amazon.com/dp/059323183X",
+            "score": "7637.50",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "Once Upon a Chef: Weeknight/Weekend: 70 Quick-Fix Weeknight Dinners + 30 Luscious Weekend Recipes: A Cookbook",
+            "thumbnail": "https://m.media-amazon.com/images/I/81SUGWXAA8L._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 11,
+                "global_position": 11
+            },
+            "asin": "0593232380",
+            "price": {
+                "discounted": true,
+                "current_price": 24.37,
+                "currency": "USD",
+                "before_price": 32.5,
+                "savings_amount": 8.13,
+                "savings_percent": 25.02
+            },
+            "reviews": {
+                "total_reviews": 1136,
+                "rating": 4.7
+            },
+            "url": "https://www.amazon.com/dp/0593232380",
+            "score": "5339.20",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "Beat Bobby Flay: Conquer the Kitchen with 100+ Battle-Tested Recipes: A Cookbook",
+            "thumbnail": "https://m.media-amazon.com/images/I/9115tV3-iVS._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 12,
+                "global_position": 12
+            },
+            "asin": "156836489X",
+            "price": {
+                "discounted": true,
+                "current_price": 26.77,
+                "currency": "USD",
+                "before_price": 37,
+                "savings_amount": 10.23,
+                "savings_percent": 27.65
+            },
+            "reviews": {
+                "total_reviews": 126,
+                "rating": 4.6
+            },
+            "url": "https://www.amazon.com/dp/156836489X",
+            "score": "579.60",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "Nobu: The Cookbook",
+            "thumbnail": "https://m.media-amazon.com/images/I/71w9+H8m+kL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 14,
+                "global_position": 14
+            },
+            "asin": "1568365551",
+            "price": {
+                "discounted": false,
+                "current_price": 19.95,
+                "currency": "USD",
+                "before_price": 0,
+                "savings_amount": 0,
+                "savings_percent": 0
+            },
+            "reviews": {
+                "total_reviews": 43,
+                "rating": 4.3
+            },
+            "url": "https://www.amazon.com/dp/1568365551",
+            "score": "184.90",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "Japanese Home Cooking with Master Chef Murata: Sixty Quick and Healthy Recipes",
+            "thumbnail": "https://m.media-amazon.com/images/I/918J+Ko9kXL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 15,
+                "global_position": 15
+            },
+            "asin": "1950968472",
+            "price": {
+                "discounted": true,
+                "current_price": 22.99,
+                "currency": "USD",
+                "before_price": 29.95,
+                "savings_amount": 6.96,
+                "savings_percent": 23.24
+            },
+            "reviews": {
+                "total_reviews": 161,
+                "rating": 4.7
+            },
+            "url": "https://www.amazon.com/dp/1950968472",
+            "score": "756.70",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "The Cajun Vegan Cookbook: A Modern Guide to Classic Cajun Cooking and Southern-Inspired Cuisine",
+            "thumbnail": "https://m.media-amazon.com/images/I/91GbQYF46DL._AC_UY218_.jpg"
+        },
+        {
+            "position": {
+                "page": 1,
+                "position": 16,
+                "global_position": 16
+            },
+            "asin": "1538719339",
+            "price": {
+                "discounted": true,
+                "current_price": 18.89,
+                "currency": "USD",
+                "before_price": 32,
+                "savings_amount": 13.11,
+                "savings_percent": 40.97
+            },
+            "reviews": {
+                "total_reviews": 4119,
+                "rating": 4.7
+            },
+            "url": "https://www.amazon.com/dp/1538719339",
+            "score": "19359.30",
+            "sponsored": false,
+            "amazonChoice": false,
+            "bestSeller": false,
+            "amazonPrime": true,
+            "title": "Gordon Ramsay Quick and Delicious: 100 Recipes to Cook in 30 Minutes or Less",
+            "thumbnail": "https://m.media-amazon.com/images/I/416kponwaCL._AC_UY218_.jpg"
+        }
+    ]
+}
