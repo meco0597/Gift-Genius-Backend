@@ -1,0 +1,8 @@
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  name: pod-identity
+spec:
+  type: 0
+  resourceID: /subscriptions/a2587f85-a10b-4753-8db8-0c6d0b28df6a/resourcegroups/gift-genius-prod-infra/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PodIdentity
+  clientID: e5a1ac7c-438d-4eeb-be55-bd85ca8b5817

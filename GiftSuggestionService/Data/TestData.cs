@@ -15,7 +15,6 @@ namespace GiftSuggestionService.Data
                 CreatedAt = System.DateTime.Now,
                 MinPrice = 80,
                 MaxPrice = 250,
-                GiftDescription = "They will take 4 strokes off their handicap with a new putter!",
                 AssociatedInterests = new List<string>() { "golf", "sports" },
                 AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Father, RelationshipDescriptor.Grandpa, RelationshipDescriptor.Boyfriend, RelationshipDescriptor.Son },
                 AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Thirties, AgeDescriptor.Sixties },
@@ -28,7 +27,6 @@ namespace GiftSuggestionService.Data
                 CreatedAt = System.DateTime.Now,
                 MinPrice = 100,
                 MaxPrice = 350,
-                GiftDescription = "They will stay warm in the cold waters!",
                 AssociatedInterests = new List<string>() { "surf", "sports" },
                 AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Father, RelationshipDescriptor.MaleFriend, RelationshipDescriptor.Boyfriend, RelationshipDescriptor.Son },
                 AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Forties, AgeDescriptor.Teens },
@@ -41,7 +39,6 @@ namespace GiftSuggestionService.Data
                 CreatedAt = System.DateTime.Now,
                 MinPrice = 5,
                 MaxPrice = 25,
-                GiftDescription = "They will get to cherish your memories together",
                 AssociatedInterests = new List<string>() { "" },
                 AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Mother, RelationshipDescriptor.Sister, RelationshipDescriptor.Girlfriend },
                 AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Fifties, AgeDescriptor.Seventies },
@@ -54,7 +51,6 @@ namespace GiftSuggestionService.Data
                 CreatedAt = System.DateTime.Now,
                 MinPrice = 15,
                 MaxPrice = 25,
-                GiftDescription = "A classic gift for any young soccer fan that they can use to practice their skills or play with friends.",
                 AssociatedInterests = new List<string>() { "soccer" },
                 AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Father, RelationshipDescriptor.Boyfriend, RelationshipDescriptor.Son },
                 AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Forties, AgeDescriptor.Teens, AgeDescriptor.PreTeens },
@@ -67,7 +63,6 @@ namespace GiftSuggestionService.Data
                 CreatedAt = System.DateTime.Now,
                 MinPrice = 20,
                 MaxPrice = 30,
-                GiftDescription = "A perfect gift for the young skateboarding enthusiast to start their adventures on the board.",
                 AssociatedInterests = new List<string>() { "skateboarding" },
                 AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Boyfriend, RelationshipDescriptor.Son, RelationshipDescriptor.Brother },
                 AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Teens, AgeDescriptor.PreTeens },
@@ -80,42 +75,27 @@ namespace GiftSuggestionService.Data
             new GeneratedGiftSuggestion()
             {
                 Name = "Cookbook by a celebrity chef",
-                Description = "A collection of recipes, instructions, and information about the preparation and serving of foods. This gift will allow them to explore unique cooking recipes.",
                 Categories = new List<string>() { "cooking" },
-                EstimatedMinPrice = 30,
-                EstimatedMaxPrice = 40,
             },
             new GeneratedGiftSuggestion()
             {
                 Name = "Custom Cutting Board",
-                Description = "A kitchen utensil used as a protective surface on which to cut or slice things. Add a personal touch by customizing it with their name or initials.",
                 Categories = new List<string>() { "cooking" },
-                EstimatedMinPrice = 20,
-                EstimatedMaxPrice = 80,
             },
             new GeneratedGiftSuggestion()
             {
                 Name = "Songwriting Notebook",
-                Description = "A collection of words, notes, and thoughts from successful songwriters who've had some success themselves, it offers advice on how to create your own masterpiece, and a collection of great ideas to help you get there.",
                 Categories = new List<string>() { "singing" },
-                EstimatedMinPrice = 10,
-                EstimatedMaxPrice = 20,
             },
             new GeneratedGiftSuggestion()
             {
                 Name = "Poster of a Musical Artist",
-                Description = "A decorative piece that can liven up a space and display personality and musical taste.",
                 Categories = new List<string>() { "singing" },
-                EstimatedMinPrice = 10,
-                EstimatedMaxPrice = 25,
             },
             new GeneratedGiftSuggestion()
             {
                 Name = "Wine Decanter",
-                Description = "A glass vessel that is used to help aerate wine. For the home cook who serves wine with every meal.",
                 Categories = new List<string>() { "cooking" },
-                EstimatedMinPrice = 30,
-                EstimatedMaxPrice = 50,
             }
         };
     }

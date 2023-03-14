@@ -1,15 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using Newtonsoft.Json;
 using GiftSuggestionService.Models;
-using GiftSuggestionService.Data;
-using System.Text.Json;
 using GiftSuggestionService.Dtos;
 using GiftSuggestionService.Configurations;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using OpenAI_API;
 using OpenAI_API.Completions;
@@ -37,26 +32,10 @@ namespace GiftSuggestionService.Services
 
         public async Task<List<GeneratedGiftSuggestion>> GetGiftSuggestions(GiftSuggestionSearchDto searchParams)
         {
-            string prompt = this.GeneratePromptFromParamsV1(searchParams);
+            string prompt = this.GeneratePromptFromParamsCompact(searchParams);
             string response = await this.CreateCompletionAsync(prompt);
             Console.WriteLine(response);
-            List<GeneratedGiftSuggestionSchema> generatedGiftSuggestions = System.Text.Json.JsonSerializer.Deserialize<List<GeneratedGiftSuggestionSchema>>(response);
-
-            List<GeneratedGiftSuggestion> toReturn = new List<GeneratedGiftSuggestion>();
-            generatedGiftSuggestions.ForEach(x =>
-            {
-                string[] minAndMax = x.EstimatedPriceRange.Split("-");
-                toReturn.Add(new GeneratedGiftSuggestion()
-                {
-                    Name = x.Name.Trim(),
-                    Description = x.Description.Trim(),
-                    Categories = x.Categories,
-                    EstimatedMinPrice = Int32.Parse(minAndMax[0]),
-                    EstimatedMaxPrice = Int32.Parse(minAndMax[1]),
-                });
-            });
-
-            return toReturn;
+            return this.ParseGptResponse(response);
         }
 
         public string GeneratePromptFromParamsV1(GiftSuggestionSearchDto searchParams)
@@ -67,8 +46,8 @@ namespace GiftSuggestionService.Services
 
         public string GeneratePromptFromParamsCompact(GiftSuggestionSearchDto searchParams)
         {
-            return "Gift recipient: 5 gifts for my Mom in her Fifties that has an interest in cooking and singing, between $25 and $100\nGift suggestions:\n\nGift Idea: Cookbook by a celebrity chef\nGift Categories: cooking\n\nGift Idea: Custom Cutting Board\nGift Categories: cooking\n\nGift Idea: Songwriting Notebook\nGift Categories: singing\n\nGift Idea: Poster of a Musical Artist\nGift Categories: singing\n\nGift Idea: Wine Decanter\nGift Categories: cooking\n\n" +
-            $"Gift recipient: 5 gifts for my {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {searchParams.AssociatedAge} that has an interest in {string.Join(", ", searchParams.AssociatedInterests)} between ${searchParams.MinPrice} and ${searchParams.MaxPrice}\nGift suggestions:";
+            return "Gift recipient: My Mom in her Fifties that has an interest in cooking and singing\n5 Gift suggestions under $100:\n\nGift Idea: Cookbook by a celebrity chef\nGift Categories: cooking\n\nGift Idea: Custom Cutting Board\nGift Categories: cooking\n\nGift Idea: Songwriting Notebook\nGift Categories: singing\n\nGift Idea: Poster of a Musical Artist\nGift Categories: singing\n\nGift Idea: Wine Decanter\nGift Categories: cooking\n\n" +
+            $"Gift recipient: My {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {searchParams.AssociatedAge} that has an interest in {string.Join(", ", searchParams.AssociatedInterests)}\n5 Gift suggestions under ${searchParams.MaxPrice}:";
         }
 
         public async Task<string> CreateCompletionAsync(string prompt)
@@ -83,6 +62,51 @@ namespace GiftSuggestionService.Services
                 presencePenalty: 0));
 
             return result.Completions.First().Text;
+        }
+
+        private List<GeneratedGiftSuggestion> ParseGptResponse(string gptResponse)
+        {
+            List<GeneratedGiftSuggestion> toReturn = new List<GeneratedGiftSuggestion>();
+            List<string> ideasAndCategories = new List<string>();
+
+            var lines = gptResponse.Split('\n', options: StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                var tokens = line.Split(' ', options: StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                int giftIdeaIndex = tokens.IndexOf("Idea:");
+                int giftCategoriesIndex = tokens.IndexOf("Categories:");
+
+                if (giftIdeaIndex > -1)
+                {
+                    string giftName = string.Join(' ', tokens.GetRange(giftIdeaIndex + 1, tokens.Count - (giftIdeaIndex + 1)));
+                    ideasAndCategories.Add(giftName);
+                }
+
+                if (giftCategoriesIndex > -1)
+                {
+                    string giftCategories = this.GetGiftCategoriesFromLine(line);
+                    ideasAndCategories.Add(giftCategories);
+                }
+            }
+
+            for (int i = 0; i < ideasAndCategories.Count; i += 2)
+            {
+                var categories = ideasAndCategories[i + 1].Split(',', options: StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList();
+                toReturn.Add(new GeneratedGiftSuggestion()
+                {
+                    Name = ideasAndCategories[i],
+                    Categories = categories,
+                });
+            }
+
+            return toReturn;
+        }
+
+        private string GetGiftCategoriesFromLine(string line)
+        {
+            int giftCategoriesIndex = line.IndexOf(":");
+            return line.Substring(giftCategoriesIndex + 1, line.Length - (giftCategoriesIndex + 1)).Trim();
         }
     }
 }

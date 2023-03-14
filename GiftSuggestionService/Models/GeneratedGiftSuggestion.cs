@@ -6,50 +6,18 @@ using GiftSuggestionService.Dtos;
 
 namespace GiftSuggestionService.Models
 {
-    public class GeneratedGiftSuggestionSchema
-    {
-        [JsonPropertyName("giftIdea")]
-        public string Name { get; set; }
-
-        [JsonPropertyName("giftDescription")]
-        public string Description { get; set; }
-
-        [JsonPropertyName("giftCategories")]
-        public List<string> Categories { get; set; }
-
-        [JsonPropertyName("estimatedPrice")]
-        public string EstimatedPriceRange { get; set; }
-
-        public GeneratedGiftSuggestion ToGeneratedModel(GeneratedGiftSuggestionSchema unParsed)
-        {
-            string[] minAndMax = unParsed.EstimatedPriceRange.Split("-");
-            return new GeneratedGiftSuggestion()
-            {
-                Name = unParsed.Name,
-                Description = unParsed.Description,
-                Categories = unParsed.Categories,
-                EstimatedMinPrice = Int32.Parse(minAndMax[0]),
-                EstimatedMaxPrice = Int32.Parse(minAndMax[1]),
-            };
-        }
-    }
-
     public class GeneratedGiftSuggestion
     {
         public string Name { get; set; }
 
-        public string Description { get; set; }
-
         public List<string> Categories { get; set; }
-
-        public int EstimatedMaxPrice { get; set; }
-
-        public int EstimatedMinPrice { get; set; }
 
         public GiftSuggestion ToPrivateModel(GiftSuggestionSearchDto searchParams)
         {
             var associatedAges = new List<AgeDescriptor>();
             var associatedRelationships = new List<RelationshipDescriptor>();
+            int minPrice = int.MaxValue;
+            int maxPrice = int.MinValue;
             if (searchParams.AssociatedAge != null)
             {
                 associatedAges.Add((AgeDescriptor)searchParams.AssociatedAge);
@@ -58,16 +26,23 @@ namespace GiftSuggestionService.Models
             {
                 associatedRelationships.Add((RelationshipDescriptor)searchParams.AssociatedRelationship);
             }
+            if (searchParams.MinPrice != null)
+            {
+                minPrice = (int)searchParams.MinPrice;
+            }
+            if (searchParams.MaxPrice != null)
+            {
+                maxPrice = (int)searchParams.MaxPrice;
+            }
 
             return new GiftSuggestion()
             {
                 GiftName = this.Name,
-                GiftDescription = this.Description,
                 AssociatedInterests = this.Categories,
                 AssociatedAgeRanges = associatedAges,
                 AssociatedRelationships = associatedRelationships,
-                MinPrice = this.EstimatedMinPrice,
-                MaxPrice = this.EstimatedMaxPrice,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
             };
         }
     }

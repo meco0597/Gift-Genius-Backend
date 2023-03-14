@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gift-suggestion-loadbalancer
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: gift-genius-prod-infra
+    # service.beta.kubernetes.io/azure-dns-label-name: {{ .Values.loadbalancer.dnsLabel }}
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 20.190.13.47
+  externalTrafficPolicy: Local
+  ports:
+    - port: 80
+      protocol: TCP
+      name: gift-suggestion-service
+  selector:
+    app: gift-suggestion-service

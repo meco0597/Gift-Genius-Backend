@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using GiftSuggestionService.Data;
 using GiftSuggestionService.Services;
 using GiftSuggestionService.Configurations;
+using GiftSuggestionService.Filters;
 
 namespace GiftSuggestionService
 {
@@ -25,6 +26,7 @@ namespace GiftSuggestionService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IGiftSuggestionRepo, GiftSuggestionRepo>();
+            services.AddSingleton<IProductRepo, ProductRepo>();
             services.AddSingleton<KeyvaultAccessorService>();
             services.AddSingleton<GptManagementService>();
             services.AddSingleton<AmazonProductManagementService>();
@@ -41,6 +43,11 @@ namespace GiftSuggestionService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GiftSuggestionService", Version = "v1" });
             });
+
+            // services.AddMvc(config =>
+            // {
+            //     config.Filters.Add(typeof(ServiceExceptionFilter));
+            // });
 
             Console.WriteLine($"--> CommandService Endpoint {Configuration["CommandService"]}");
         }

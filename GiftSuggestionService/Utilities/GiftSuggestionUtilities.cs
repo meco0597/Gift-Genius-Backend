@@ -8,7 +8,7 @@ namespace GiftSuggestionService.Utilities
     {
         public static string GenerateGiftSuggestionIdFromName(string giftName)
         {
-            return giftName.ToLower().Replace(' ', '-');
+            return giftName.Trim().ToLower().Replace(' ', '-');
         }
 
         public static int NormalizeAge(int age)

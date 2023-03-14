@@ -11,7 +11,6 @@ namespace GiftSuggestionService.Data
     using Microsoft.Extensions.Options;
     using MongoDB.Driver;
     using GiftSuggestionService.Dtos;
-    using System.Linq.Expressions;
 
     public class GiftSuggestionRepo : IGiftSuggestionRepo
     {
@@ -31,12 +30,12 @@ namespace GiftSuggestionService.Data
                 this.dbConfiguration.DatabaseName);
 
             this.giftSuggestionsCollection = mongoDatabase.GetCollection<GiftSuggestion>(
-                this.dbConfiguration.CollectionName);
+                this.dbConfiguration.GiftSuggestionCollectionName);
         }
 
         public async Task<List<GiftSuggestion>> GetBySearchParameters(GiftSuggestionSearchDto searchParams)
         {
-            double pricePadding = 0.3;
+            double pricePadding = 0.1;
 
             var filterBuilder = Builders<GiftSuggestion>.Filter;
             var filter = filterBuilder.Empty;
@@ -86,10 +85,8 @@ namespace GiftSuggestionService.Data
                 {
                     Id = id,
                     GiftName = giftSuggestion.GiftName,
-                    GiftDescription = giftSuggestion.GiftDescription,
                     CreatedAt = DateTime.Now,
-                    Link = giftSuggestion.Link,
-                    ThumbnailUrl = giftSuggestion.ThumbnailUrl,
+                    ProductIds = giftSuggestion.ProductIds,
                     MinPrice = giftSuggestion.MinPrice,
                     MaxPrice = giftSuggestion.MaxPrice,
                     AssociatedInterests = giftSuggestion.AssociatedInterests,
@@ -105,19 +102,19 @@ namespace GiftSuggestionService.Data
             }
             else
             {
-                exisitingGiftSuggestion.AssociatedInterests.AddRange(giftSuggestion.AssociatedInterests);
-                exisitingGiftSuggestion.AssociatedAgeRanges.AddRange(giftSuggestion.AssociatedAgeRanges);
-                exisitingGiftSuggestion.AssociatedRelationships.AddRange(giftSuggestion.AssociatedRelationships);
+                exisitingGiftSuggestion.AssociatedInterests = (List<string>)exisitingGiftSuggestion.AssociatedInterests.Intersect(giftSuggestion.AssociatedInterests);
+                exisitingGiftSuggestion.AssociatedAgeRanges = (List<AgeDescriptor>)exisitingGiftSuggestion.AssociatedAgeRanges.Intersect(giftSuggestion.AssociatedAgeRanges);
+                exisitingGiftSuggestion.AssociatedRelationships = (List<RelationshipDescriptor>)exisitingGiftSuggestion.AssociatedRelationships.Intersect(giftSuggestion.AssociatedRelationships);
+                exisitingGiftSuggestion.ProductIds = (List<string>)exisitingGiftSuggestion.ProductIds.Intersect(giftSuggestion.ProductIds);
                 // update 
                 GiftSuggestion updatedGiftSuggestion = new GiftSuggestion()
                 {
+                    Id = id,
                     GiftName = exisitingGiftSuggestion.GiftName,
-                    GiftDescription = exisitingGiftSuggestion.GiftDescription,
                     CreatedAt = exisitingGiftSuggestion.CreatedAt,
-                    Link = exisitingGiftSuggestion.Link,
-                    ThumbnailUrl = exisitingGiftSuggestion.ThumbnailUrl,
                     MinPrice = Math.Min(giftSuggestion.MinPrice, exisitingGiftSuggestion.MinPrice),
-                    MaxPrice = Math.Min(giftSuggestion.MaxPrice, exisitingGiftSuggestion.MaxPrice),
+                    MaxPrice = Math.Max(giftSuggestion.MaxPrice, exisitingGiftSuggestion.MaxPrice),
+                    ProductIds = exisitingGiftSuggestion.ProductIds,
                     AssociatedInterests = exisitingGiftSuggestion.AssociatedInterests,
                     AssociatedAgeRanges = exisitingGiftSuggestion.AssociatedAgeRanges,
                     AssociatedRelationships = exisitingGiftSuggestion.AssociatedRelationships,

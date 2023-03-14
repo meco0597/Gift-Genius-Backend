@@ -1,0 +1,1 @@
+az aks stop -n givr-cluster -g gift-genius-prod-infra

@@ -18,25 +18,108 @@ namespace GiftSuggestionService.Controllers
     {
         private readonly GptManagementService gptManagementService;
         private readonly AmazonProductManagementService amazonProductManagementService;
-        private readonly IGiftSuggestionRepo repository;
+        private readonly IGiftSuggestionRepo giftSuggestionRepository;
+        private readonly IProductRepo productRepository;
         private readonly IMapper mapper;
 
         public GiftSuggestionsController(
             GptManagementService gptManagementService,
             AmazonProductManagementService amazonProductManagementService,
-            IGiftSuggestionRepo repository,
+            IGiftSuggestionRepo giftSuggestionRepository,
+            IProductRepo productRepository,
             IMapper mapper)
         {
             this.gptManagementService = gptManagementService;
             this.amazonProductManagementService = amazonProductManagementService;
-            this.repository = repository;
+            this.giftSuggestionRepository = giftSuggestionRepository;
+            this.productRepository = productRepository;
             this.mapper = mapper;
+        }
+
+        [HttpPost(Name = "GetGiftSuggestionBySearchParameters")]
+        public async Task<ActionResult<IEnumerable<Product>>> SearchGiftSuggestionsBySearchParams(GiftSuggestionSearchDto searchParams)
+        {
+            List<GiftSuggestion> giftSuggestions;
+            List<GeneratedGiftSuggestion> generatedGiftSuggestions;
+            int numOfGiftSuggestionsToReturn = 5;
+
+            // check the db for existing entries for the search parameters
+            giftSuggestions = await this.giftSuggestionRepository.GetBySearchParameters(searchParams);
+
+            // if less than 10 entries available, go to gpt to generate some more
+            if (giftSuggestions == null || giftSuggestions.Count < 10)
+            {
+                generatedGiftSuggestions = await this.gptManagementService.GetGiftSuggestions(searchParams);
+            }
+            else
+            {
+                // else grab numOfGiftSuggestionsToReturn random suggestions
+                var random = new Random();
+                for (int i = 0; i < giftSuggestions.Count - numOfGiftSuggestionsToReturn; i++)
+                {
+                    giftSuggestions.RemoveAt(random.Next(giftSuggestions.Count));
+                }
+
+                generatedGiftSuggestions = new List<GeneratedGiftSuggestion>();
+                giftSuggestions.ForEach(x =>
+                {
+                    generatedGiftSuggestions.Add(new GeneratedGiftSuggestion()
+                    {
+                        Categories = x.AssociatedInterests,
+                        Name = x.GiftName,
+                    });
+                });
+            }
+
+            // ask amazon for 3 (3 is default for now) products with the lowest relavancy score
+            Dictionary<string, Task<List<AmazonProductResponseModel>>> queryProductMapping = this.amazonProductManagementService.GetAmazonProductDetailsFromListOfQueries(
+                generatedGiftSuggestions.Select(x => x.Name).ToList(), searchParams.MaxPrice, numOfProducts: 3).Result;
+
+            // Create and store the product models into the DB
+            List<Product> products = new List<Product>();
+            foreach (string giftName in queryProductMapping.Keys)
+            {
+                List<string> ids = new List<string>();
+                queryProductMapping[giftName].Result.ForEach(x =>
+                {
+                    Product product = new Product()
+                    {
+                        Id = $"amazon_{x.ASIN}",
+                        Title = x.Title,
+                        ThumbnailUrl = x.ThumbnailUrl,
+                        Link = x.Url,
+                        Price = x.Price.CurrentPrice,
+                    };
+
+                    ids.Add(product.Id);
+                    products.Add(this.productRepository.CreateOrUpdateAsync(product).Result);
+                });
+
+                // save gift suggestions to the db along with the products
+                generatedGiftSuggestions.Where(x => x.Name == giftName).ToList().ForEach(x =>
+                {
+                    var giftSuggestion = x.ToPrivateModel(searchParams);
+
+                    if (giftSuggestion.ProductIds != null)
+                    {
+                        giftSuggestion.ProductIds.AddRange(ids);
+                    }
+                    else
+                    {
+                        giftSuggestion.ProductIds = ids;
+                    }
+
+                    var createdGiftSuggestion = this.giftSuggestionRepository.CreateOrUpdateAsync(giftSuggestion).Result;
+                });
+            }
+
+            return Ok(products);
         }
 
         [HttpGet(Name = "GetAllGiftSuggestions")]
         public async Task<ActionResult<IEnumerable<GiftSuggestionReadDto>>> GetAllGiftSuggestions()
         {
-            var giftSuggestionItem = await this.repository.GetAsync();
+            var giftSuggestionItem = await this.giftSuggestionRepository.GetAsync();
 
             return Ok(mapper.Map<IEnumerable<GiftSuggestionReadDto>>(giftSuggestionItem));
         }
@@ -44,7 +127,7 @@ namespace GiftSuggestionService.Controllers
         [HttpGet("{id}", Name = "GetGiftSuggestionById")]
         public async Task<ActionResult<GiftSuggestionReadDto>> GetGiftSuggestionById(string id)
         {
-            var giftSuggestionItem = await this.repository.GetAsync(id);
+            var giftSuggestionItem = await this.giftSuggestionRepository.GetAsync(id);
             if (giftSuggestionItem != null)
             {
                 return Ok(mapper.Map<GiftSuggestionReadDto>(giftSuggestionItem));
@@ -53,50 +136,12 @@ namespace GiftSuggestionService.Controllers
             return NotFound();
         }
 
-        [HttpPost(Name = "GetGiftSuggestionBySearchParameters")]
-        public async Task<ActionResult<IEnumerable<GiftSuggestionReadDto>>> SearchGiftSuggestionsBySearchParams(GiftSuggestionSearchDto searchParams)
-        {
-            List<GiftSuggestion> giftSuggestions;
-            int numOfGiftSuggestionsToReturn = 5;
-
-            giftSuggestions = await this.repository.GetBySearchParameters(searchParams);
-            if (giftSuggestions == null || giftSuggestions.Count < 10)
-            {
-                var generatedGiftSuggestions = await this.gptManagementService.GetGiftSuggestions(searchParams);
-                giftSuggestions = new List<GiftSuggestion>();
-
-                var queryProductMapping = this.amazonProductManagementService.GetAmazonProductDetailsFromListOfQueries(generatedGiftSuggestions.Select(x => x.Name).ToList()).Result;
-
-                generatedGiftSuggestions.ForEach(x =>
-                {
-                    var giftSuggestion = x.ToPrivateModel(searchParams);
-                    var amazonDetails = queryProductMapping[x.Name].Result;
-
-                    giftSuggestion.Link = amazonDetails.Url;
-                    giftSuggestion.ThumbnailUrl = amazonDetails.ThumbnailUrl;
-
-                    var createdGiftSuggestion = this.repository.CreateOrUpdateAsync(giftSuggestion).Result;
-                    giftSuggestions.Add(createdGiftSuggestion);
-                });
-            }
-            else
-            {
-                var random = new Random();
-                for (int i = 0; i < giftSuggestions.Count - numOfGiftSuggestionsToReturn; i++)
-                {
-                    giftSuggestions.RemoveAt(random.Next(giftSuggestions.Count));
-                }
-            }
-
-            return Ok(mapper.Map<IEnumerable<GiftSuggestionReadDto>>(giftSuggestions));
-        }
-
         [HttpPut(Name = "CreateOrUpdateGiftSuggestion")]
         public async Task<ActionResult<GiftSuggestionReadDto>> CreateOrUpdateGiftSuggestion(GiftSuggestionPutDto giftSuggestionPutDto)
         {
             var giftSuggestionModel = mapper.Map<GiftSuggestion>(giftSuggestionPutDto);
 
-            var giftSuggestion = await this.repository.CreateOrUpdateAsync(giftSuggestionModel);
+            var giftSuggestion = await this.giftSuggestionRepository.CreateOrUpdateAsync(giftSuggestionModel);
 
             var giftSuggestionReadDto = mapper.Map<GiftSuggestionReadDto>(giftSuggestion);
 
@@ -106,11 +151,11 @@ namespace GiftSuggestionService.Controllers
         [HttpPost("{id}/upvotes/increment", Name = "IncrementNumOfUpvotes")]
         public async Task<ActionResult<GiftSuggestionReadDto>> IncrementNumOfUpvotes(string id)
         {
-            var retrievedGiftSuggestion = await this.repository.GetAsync(id);
+            var retrievedGiftSuggestion = await this.giftSuggestionRepository.GetAsync(id);
             if (retrievedGiftSuggestion != null)
             {
                 retrievedGiftSuggestion.NumOfUpvotes = retrievedGiftSuggestion.NumOfUpvotes + 1;
-                await this.repository.UpdateAsync(id, retrievedGiftSuggestion);
+                await this.giftSuggestionRepository.UpdateAsync(id, retrievedGiftSuggestion);
                 return Ok(mapper.Map<GiftSuggestionReadDto>(retrievedGiftSuggestion));
             }
 
@@ -120,15 +165,21 @@ namespace GiftSuggestionService.Controllers
         [HttpPost("{id}/clicks/increment", Name = "IncrementNumOfClicks")]
         public async Task<ActionResult<GiftSuggestionReadDto>> IncrementNumOfTimesClicked(string id)
         {
-            var retrievedGiftSuggestion = await this.repository.GetAsync(id);
+            var retrievedGiftSuggestion = await this.giftSuggestionRepository.GetAsync(id);
             if (retrievedGiftSuggestion != null)
             {
                 retrievedGiftSuggestion.NumOfClicks = retrievedGiftSuggestion.NumOfClicks + 1;
-                await this.repository.UpdateAsync(id, retrievedGiftSuggestion);
+                await this.giftSuggestionRepository.UpdateAsync(id, retrievedGiftSuggestion);
                 return Ok(mapper.Map<GiftSuggestionReadDto>(retrievedGiftSuggestion));
             }
 
             return NotFound();
+        }
+
+        [HttpGet("/healthcheck", Name = "HealthCheck")]
+        public ActionResult HealthCheck()
+        {
+            return Ok();
         }
     }
 }

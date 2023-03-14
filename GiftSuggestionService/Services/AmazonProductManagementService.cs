@@ -23,31 +23,51 @@ namespace GiftSuggestionService.Services
             this.rapidApiKey = keyvaultAccessorService.GetSecretAsync(this.amazonProductConfiguration.SecretName).Result;
         }
 
-        public async Task<Dictionary<string, Task<AmazonProductResponseModel>>> GetAmazonProductDetailsFromListOfQueries(List<string> queries)
+        public async Task<Dictionary<string, Task<List<AmazonProductResponseModel>>>> GetAmazonProductDetailsFromListOfQueries(List<string> queries, int? nullableMaxPrice, int numOfProducts = 5)
         {
-            Dictionary<string, Task<AmazonProductResponseModel>> queryToProduct = new Dictionary<string, Task<AmazonProductResponseModel>>();
+            int maxPrice = nullableMaxPrice ?? 50;
+            Dictionary<string, Task<List<AmazonProductResponseModel>>> queryToProduct = new Dictionary<string, Task<List<AmazonProductResponseModel>>>();
+
             foreach (string query in queries)
             {
-                var task = this.GetAmazonChoiceProductDetails(query);
-                queryToProduct.Add(query, task);
+                try
+                {
+                    var task = this.ChooseAmazonProducts(query, maxPrice, numOfProducts);
+                    queryToProduct.Add(query, task);
+                }
+                catch (ArgumentException)
+                {
+                    continue;
+                }
             }
 
             await Task.WhenAll(queryToProduct.Values.ToArray());
             return queryToProduct;
         }
 
-        public async Task<AmazonProductResponseModel> GetAmazonChoiceProductDetails(string productQuery)
+        public async Task<List<AmazonProductResponseModel>> ChooseAmazonProducts(string productQuery, int maxPrice, int numOfProducts)
         {
-            var amazonResponseString = await this.SendApiRequest(productQuery);
-            var productList = JsonSerializer.Deserialize<AmazonProductSearchResponseModel>(amazonResponseString);
+            List<AmazonProductResponseModel> productsToReturn = new List<AmazonProductResponseModel>();
 
-            var amazonChoice = productList.Result.FirstOrDefault(x => x.AmazonChoice == true);
-            if (amazonChoice == null)
+            // search amazon for the query
+            var amazonResponseString = await this.SendApiRequest(productQuery);
+
+            var responseModel = JsonSerializer.Deserialize<AmazonProductSearchResponseModel>(amazonResponseString);
+            var productList = responseModel.Result;
+
+            // Filter by max price
+            productList = productList.Where(x => x.Price.CurrentPrice <= maxPrice).ToList();
+
+            // add the amazon choice if present
+            var amazonChoice = productList.FirstOrDefault(x => x.AmazonChoice == true);
+            if (amazonChoice != null)
             {
-                return productList.Result.MinBy(x => x.Position.Position);
+                productsToReturn.Add(amazonChoice);
             }
 
-            return amazonChoice;
+            // take the numOfProducts lowest scores
+            productList = productList.OrderBy(x => Double.Parse(x.Score)).ToList();
+            return productList.Take(numOfProducts - productsToReturn.Count).ToList();
         }
 
         public async Task<string> SendApiRequest(string query)
@@ -64,10 +84,14 @@ namespace GiftSuggestionService.Services
                         { "X-RapidAPI-Key", this.rapidApiKey },
                         { "X-RapidAPI-Host", this.amazonProductConfiguration.ApiUrl },
                     },
-
                 };
                 using (var response = await client.SendAsync(request))
                 {
+                    if (response.StatusCode.Equals(System.Net.HttpStatusCode.UnprocessableEntity))
+                    {
+                        throw new ArgumentException($"Amazon didn't like this query: {query}");
+                    }
+
                     response.EnsureSuccessStatusCode();
                     var body = await response.Content.ReadAsStringAsync();
                     Console.WriteLine(body);

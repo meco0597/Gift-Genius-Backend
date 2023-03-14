@@ -12,15 +12,11 @@ namespace GiftSuggestionService.Models
 
         public DateTime CreatedAt { get; set; }
 
-        public string Link { get; set; }
-
-        public string ThumbnailUrl { get; set; }
+        public List<string> ProductIds { get; set; }
 
         public int MinPrice { get; set; }
 
         public int MaxPrice { get; set; }
-
-        public string GiftDescription { get; set; }
 
         public List<string> AssociatedInterests { get; set; }
 

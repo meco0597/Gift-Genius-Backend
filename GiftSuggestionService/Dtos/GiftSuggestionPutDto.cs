@@ -12,8 +12,6 @@ namespace GiftSuggestionService.Dtos
 
         public int MaxPrice { get; set; }
 
-        public string GiftDescription { get; set; }
-
         public List<string> AssociatedInterests { get; set; }
 
         public List<RelationshipDescriptor> AssociatedRelationships { get; set; }

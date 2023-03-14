@@ -1,31 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: giftSuggestions-depl
+  name: gift-suggestions-depl
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: giftSuggestionservice
+      app: gift-suggestion-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 15
   template:
     metadata:
       labels:
-        app: giftSuggestionservice
+        app: gift-suggestion-service
+        aadpodidbinding: pod-identity
     spec:
       containers:
-        - name: giftSuggestionservice
-          image: meco0597/giftSuggestionservice:latest
+        - name: gift-suggestion-service
+          image: givrprodacr.azurecr.io/gift-suggestion-service
+          resources:
+            requests:
+              cpu: 250m
+              memory: 350Mi
+            limits:
+              memory: "900Mi"
+              cpu: "700m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: giftSuggestions-clusterip-srv
+  name: gift-suggestion-clusterip-srv
 spec:
   type: ClusterIP
   selector:
-    app: giftSuggestionservice
+    app: gift-suggestion-service
   ports:
-  - name: giftSuggestionservice
-    protocol: TCP
-    port: 80
-    targetPort: 80
+    - name: gift-suggestion-service
+      protocol: TCP
+      port: 80
+      targetPort: 80

@@ -20,7 +20,13 @@ namespace GiftSuggestionService.Services
             IOptionsMonitor<KeyvaultConfiguration> optionsMonitor)
         {
             this.keyvaultConfiguration = optionsMonitor.CurrentValue;
-            this.secretClient = new SecretClient(new Uri(this.keyvaultConfiguration.keyvaultUri), new DefaultAzureCredential(true));
+            this.secretClient = new SecretClient(new Uri(
+                this.keyvaultConfiguration.keyvaultUri),
+                new DefaultAzureCredential(
+                    new DefaultAzureCredentialOptions
+                    {
+                        ExcludeSharedTokenCacheCredential = true
+                    }));
         }
 
         public async Task<string> GetSecretAsync(string secretName)

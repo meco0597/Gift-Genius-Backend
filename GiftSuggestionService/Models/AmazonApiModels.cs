@@ -3,6 +3,7 @@ namespace GiftSuggestionService.Models
     using System.Collections.Generic;
     using System.Text.Json.Serialization;
 
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public class AmazonProductSearchResponseModel
     {
         [JsonPropertyName("category")]
@@ -12,9 +13,10 @@ namespace GiftSuggestionService.Models
         public List<AmazonProductResponseModel> Result { get; set; }
 
         [JsonPropertyName("totalProducts")]
-        public string TotalProducts { get; set; }
+        public int TotalProducts { get; set; }
     }
 
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public class AmazonProductResponseModel
     {
         [JsonPropertyName("position")]
@@ -54,6 +56,7 @@ namespace GiftSuggestionService.Models
         public string ThumbnailUrl { get; set; }
     }
 
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public class AmazonPositionModel
     {
         [JsonPropertyName("page")]
@@ -66,6 +69,7 @@ namespace GiftSuggestionService.Models
         public int GlobalPosition { get; set; }
     }
 
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public class AmazonPriceModel
     {
         [JsonPropertyName("discounted")]
@@ -87,6 +91,7 @@ namespace GiftSuggestionService.Models
         public double SavingsPercent { get; set; }
     }
 
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public class AmazonReviewsModel
     {
         [JsonPropertyName("total_reviews")]
