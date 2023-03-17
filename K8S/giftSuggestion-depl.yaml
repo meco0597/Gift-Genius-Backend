@@ -10,7 +10,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
+      maxSurge: 2
       maxUnavailable: 1
   minReadySeconds: 15
   template:
@@ -21,7 +21,8 @@ spec:
     spec:
       containers:
         - name: gift-suggestion-service
-          image: givrprodacr.azurecr.io/gift-suggestion-service
+          image: givrprodacr.azurecr.io/gift-suggestion-service:latest
+          imagePullPolicy: Always
           resources:
             requests:
               cpu: 250m

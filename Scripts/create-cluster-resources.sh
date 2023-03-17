@@ -9,8 +9,6 @@ podIdentityId=$(az identity create --name PodIdentity --resource-group $resource
 publicIp=$(az network public-ip show -n givrpublicip -g $resourceGroup --query "{ipAddress: ipAddress}" -o tsv)
 logAnalyticsId=$(az monitor log-analytics workspace create --resource-group $resourceGroup --workspace-name givr-logs-workspace --query id -o tsv)
 
-
-
 az aks create -g $resourceGroup -n $clusterName \
     --enable-managed-identity \
     --enable-addons monitoring \
@@ -18,9 +16,13 @@ az aks create -g $resourceGroup -n $clusterName \
     --assign-identity $podIdentityId \
     --assign-kubelet-identity $clusterIdentityId \
     --workspace-resource-id $logAnalyticsId \
+    --node-count 1 \
+    --enable-cluster-autoscaler \
+    --min-count 1 \
+    --max-count 5 \
+    --cluster-autoscaler-profile scan-interval=30s \
     --network-plugin azure \
     --generate-ssh-keys
-
 
 AksManagedIdentity="$(az aks show -g $resourceGroup -n $clusterName --query identityProfile.kubeletidentity.clientId -o tsv)"
 az role assignment create --role "Managed Identity Operator" --assignee $AksManagedIdentity --scope /subscriptions/$SubscriptionId/resourcegroups/$NodeResourceGroupName

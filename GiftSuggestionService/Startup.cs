@@ -30,11 +30,14 @@ namespace GiftSuggestionService
             services.AddSingleton<KeyvaultAccessorService>();
             services.AddSingleton<GptManagementService>();
             services.AddSingleton<AmazonProductManagementService>();
+            services.AddSingleton<RequestAccessorService>();
+
             services.Configure<Dbconfiguration>(Configuration.GetSection("GiftSuggestionsDatabase"));
             services.Configure<KeyvaultConfiguration>(Configuration.GetSection("Keyvault"));
             services.Configure<EnivronmentConfiguration>(Configuration.GetSection("Environment"));
             services.Configure<GptConfiguration>(Configuration.GetSection("GptCongiguration"));
             services.Configure<AmazonProductConfiguration>(Configuration.GetSection("AmazonProductConfiguration"));
+            services.AddHttpContextAccessor();
 
             //services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddControllers();
@@ -44,12 +47,10 @@ namespace GiftSuggestionService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GiftSuggestionService", Version = "v1" });
             });
 
-            // services.AddMvc(config =>
-            // {
-            //     config.Filters.Add(typeof(ServiceExceptionFilter));
-            // });
-
-            Console.WriteLine($"--> CommandService Endpoint {Configuration["CommandService"]}");
+            services.AddMvc(config =>
+            {
+                config.Filters.Add(typeof(ServiceExceptionFilter));
+            });
         }
 
 
@@ -67,6 +68,9 @@ namespace GiftSuggestionService
             app.UseRouting();
 
             //sapp.UseAuthorization();
+
+            app.UseMiddleware<CorrelationMiddleware>();
+            app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

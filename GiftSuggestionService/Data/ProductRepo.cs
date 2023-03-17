@@ -67,7 +67,7 @@ namespace GiftSuggestionService.Data
                     Title = product.Title ?? exisitingProduct.Title,
                     Price = product.Price == default(double) ? exisitingProduct.Price : product.Price,
                     Link = product.Link ?? exisitingProduct.Link,
-                    ThumbnailUrl = product.Link ?? exisitingProduct.ThumbnailUrl,
+                    ThumbnailUrl = product.ThumbnailUrl ?? exisitingProduct.ThumbnailUrl,
                     NumOfUpvotes = exisitingProduct.NumOfUpvotes,
                     NumOfClicks = exisitingProduct.NumOfClicks,
                     NumOfTimesSuggested = exisitingProduct.NumOfTimesSuggested + 1,

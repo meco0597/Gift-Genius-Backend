@@ -9,6 +9,7 @@ using GiftSuggestionService.Models;
 using GiftSuggestionService.Services;
 using GiftSuggestionService.Utilities;
 using System.Linq;
+using System.Text.Json;
 
 namespace GiftSuggestionService.Controllers
 {
@@ -18,6 +19,7 @@ namespace GiftSuggestionService.Controllers
     {
         private readonly GptManagementService gptManagementService;
         private readonly AmazonProductManagementService amazonProductManagementService;
+        private readonly RequestAccessorService requestAccessorService;
         private readonly IGiftSuggestionRepo giftSuggestionRepository;
         private readonly IProductRepo productRepository;
         private readonly IMapper mapper;
@@ -27,12 +29,14 @@ namespace GiftSuggestionService.Controllers
             AmazonProductManagementService amazonProductManagementService,
             IGiftSuggestionRepo giftSuggestionRepository,
             IProductRepo productRepository,
+            RequestAccessorService requestAccessorService,
             IMapper mapper)
         {
             this.gptManagementService = gptManagementService;
             this.amazonProductManagementService = amazonProductManagementService;
             this.giftSuggestionRepository = giftSuggestionRepository;
             this.productRepository = productRepository;
+            this.requestAccessorService = requestAccessorService;
             this.mapper = mapper;
         }
 
@@ -72,7 +76,7 @@ namespace GiftSuggestionService.Controllers
             }
 
             // ask amazon for 3 (3 is default for now) products with the lowest relavancy score
-            Dictionary<string, Task<List<AmazonProductResponseModel>>> queryProductMapping = this.amazonProductManagementService.GetAmazonProductDetailsFromListOfQueries(
+            Dictionary<string, Task<List<AmazonProductResponseModelv2>>> queryProductMapping = this.amazonProductManagementService.GetAmazonProductDetailsFromListOfQueries(
                 generatedGiftSuggestions.Select(x => x.Name).ToList(), searchParams.MaxPrice, numOfProducts: 3).Result;
 
             // Create and store the product models into the DB
@@ -87,10 +91,11 @@ namespace GiftSuggestionService.Controllers
                         Id = $"amazon_{x.ASIN}",
                         Title = x.Title,
                         ThumbnailUrl = x.ThumbnailUrl,
-                        Link = x.Url,
-                        Price = x.Price.CurrentPrice,
+                        Link = this.amazonProductManagementService.CreateAffiliateLink(x.ASIN),
+                        Price = x.Price,
                     };
 
+                    Console.WriteLine($"Suggesting product: Id={product.Id} Price={product.Price} Title={product.Title} Link={product.Link} CorrelationId={this.requestAccessorService.GetCorrelationId()}");
                     ids.Add(product.Id);
                     products.Add(this.productRepository.CreateOrUpdateAsync(product).Result);
                 });

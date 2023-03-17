@@ -5,8 +5,7 @@ namespace GiftSuggestionService.Models
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum RelationshipDescriptor
     {
-        FemaleFriend,
-        MaleFriend,
+        Friend,
 
         Sister,
         Brother,

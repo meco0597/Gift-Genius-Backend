@@ -30,16 +30,10 @@ namespace GiftSuggestionService.Data
 
             if (repo.GetAsync().Result.Count == 0)
             {
-                Console.WriteLine("--> Seeding Data...");
-
                 foreach (var giftSuggestion in TestData.TestGiftSuggestions)
                 {
                     await repo.CreateAsync(giftSuggestion);
                 }
-            }
-            else
-            {
-                Console.WriteLine("--> We already have data");
             }
         }
     }

@@ -14,15 +14,12 @@ namespace GiftSuggestionService.Filters
     /// <seealso cref="Microsoft.AspNetCore.Mvc.Filters.IExceptionFilter" />
     public class ServiceExceptionFilter : IExceptionFilter
     {
-        private readonly ILogger logger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceExceptionFilter" /> class.
         /// </summary>
         /// <param name="logger">A logger instance.</param>
-        public ServiceExceptionFilter(ILogger logger)
+        public ServiceExceptionFilter()
         {
-            this.logger = logger;
         }
 
         /// <summary>
@@ -46,17 +43,17 @@ namespace GiftSuggestionService.Filters
 
                 if (status >= HttpStatusCode.InternalServerError)
                 {
-                    this.logger.LogError("OnException: Unhandled Server Error", exceptionToLog);
+                    Console.Error.WriteLine("OnException: Unhandled Server Error", exceptionToLog);
                 }
                 else
                 {
-                    this.logger.LogWarning("OnException: User error", exceptionToLog);
+                    Console.Error.WriteLine("OnException: User error", exceptionToLog);
                 }
             }
             catch (Exception ex)
             {
-                this.logger.LogError("OnException: Got an exception while trying to parse the context.", ex);
-                this.logger.LogError("OnException: Unhandled exception logged without parsing.", context?.Exception);
+                Console.Error.WriteLine("OnException: Got an exception while trying to parse the context.", ex);
+                Console.Error.WriteLine("OnException: Unhandled exception logged without parsing.", context?.Exception);
             }
         }
     }

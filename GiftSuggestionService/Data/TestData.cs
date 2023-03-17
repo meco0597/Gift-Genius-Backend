@@ -28,7 +28,7 @@ namespace GiftSuggestionService.Data
                 MinPrice = 100,
                 MaxPrice = 350,
                 AssociatedInterests = new List<string>() { "surf", "sports" },
-                AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Father, RelationshipDescriptor.MaleFriend, RelationshipDescriptor.Boyfriend, RelationshipDescriptor.Son },
+                AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Father, RelationshipDescriptor.Friend, RelationshipDescriptor.Boyfriend, RelationshipDescriptor.Son },
                 AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Forties, AgeDescriptor.Teens },
                 NumOfUpvotes = 10_325,
             },

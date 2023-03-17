@@ -102,10 +102,10 @@ namespace GiftSuggestionService.Data
             }
             else
             {
-                exisitingGiftSuggestion.AssociatedInterests = (List<string>)exisitingGiftSuggestion.AssociatedInterests.Intersect(giftSuggestion.AssociatedInterests);
-                exisitingGiftSuggestion.AssociatedAgeRanges = (List<AgeDescriptor>)exisitingGiftSuggestion.AssociatedAgeRanges.Intersect(giftSuggestion.AssociatedAgeRanges);
-                exisitingGiftSuggestion.AssociatedRelationships = (List<RelationshipDescriptor>)exisitingGiftSuggestion.AssociatedRelationships.Intersect(giftSuggestion.AssociatedRelationships);
-                exisitingGiftSuggestion.ProductIds = (List<string>)exisitingGiftSuggestion.ProductIds.Intersect(giftSuggestion.ProductIds);
+                exisitingGiftSuggestion.AssociatedInterests = exisitingGiftSuggestion.AssociatedInterests.Intersect(giftSuggestion.AssociatedInterests).ToList();
+                exisitingGiftSuggestion.AssociatedAgeRanges = exisitingGiftSuggestion.AssociatedAgeRanges.Intersect(giftSuggestion.AssociatedAgeRanges).ToList();
+                exisitingGiftSuggestion.AssociatedRelationships = exisitingGiftSuggestion.AssociatedRelationships.Intersect(giftSuggestion.AssociatedRelationships).ToList();
+                exisitingGiftSuggestion.ProductIds = exisitingGiftSuggestion.ProductIds.Intersect(giftSuggestion.ProductIds).ToList();
                 // update 
                 GiftSuggestion updatedGiftSuggestion = new GiftSuggestion()
                 {

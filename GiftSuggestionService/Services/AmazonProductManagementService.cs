@@ -14,6 +14,7 @@ namespace GiftSuggestionService.Services
     {
         private readonly string rapidApiKey;
         private readonly AmazonProductConfiguration amazonProductConfiguration;
+        private string amazonAffiliateTag = "givr0e-20";
 
         public AmazonProductManagementService(
             KeyvaultAccessorService keyvaultAccessorService,
@@ -23,10 +24,10 @@ namespace GiftSuggestionService.Services
             this.rapidApiKey = keyvaultAccessorService.GetSecretAsync(this.amazonProductConfiguration.SecretName).Result;
         }
 
-        public async Task<Dictionary<string, Task<List<AmazonProductResponseModel>>>> GetAmazonProductDetailsFromListOfQueries(List<string> queries, int? nullableMaxPrice, int numOfProducts = 5)
+        public async Task<Dictionary<string, Task<List<AmazonProductResponseModelv2>>>> GetAmazonProductDetailsFromListOfQueries(List<string> queries, int? nullableMaxPrice, int numOfProducts = 5)
         {
             int maxPrice = nullableMaxPrice ?? 50;
-            Dictionary<string, Task<List<AmazonProductResponseModel>>> queryToProduct = new Dictionary<string, Task<List<AmazonProductResponseModel>>>();
+            Dictionary<string, Task<List<AmazonProductResponseModelv2>>> queryToProduct = new Dictionary<string, Task<List<AmazonProductResponseModelv2>>>();
 
             foreach (string query in queries)
             {
@@ -35,9 +36,9 @@ namespace GiftSuggestionService.Services
                     var task = this.ChooseAmazonProducts(query, maxPrice, numOfProducts);
                     queryToProduct.Add(query, task);
                 }
-                catch (ArgumentException)
+                catch (Exception ex)
                 {
-                    continue;
+                    Console.WriteLine($"Exception calling the Amazon API: Exception={ex.Message} InnerException={ex.InnerException}");
                 }
             }
 
@@ -45,32 +46,67 @@ namespace GiftSuggestionService.Services
             return queryToProduct;
         }
 
-        public async Task<List<AmazonProductResponseModel>> ChooseAmazonProducts(string productQuery, int maxPrice, int numOfProducts)
+        public async Task<List<AmazonProductResponseModelv2>> ChooseAmazonProducts(string productQuery, int maxPrice, int numOfProducts)
         {
-            List<AmazonProductResponseModel> productsToReturn = new List<AmazonProductResponseModel>();
+            List<AmazonProductResponseModelv2> productsToReturn = new List<AmazonProductResponseModelv2>();
 
             // search amazon for the query
-            var amazonResponseString = await this.SendApiRequest(productQuery);
+            var amazonResponseString = await this.SendApiRequestV2(productQuery);
 
-            var responseModel = JsonSerializer.Deserialize<AmazonProductSearchResponseModel>(amazonResponseString);
-            var productList = responseModel.Result;
+            var productList = JsonSerializer.Deserialize<List<AmazonProductResponseModelv2>>(amazonResponseString);
 
             // Filter by max price
-            productList = productList.Where(x => x.Price.CurrentPrice <= maxPrice).ToList();
-
-            // add the amazon choice if present
-            var amazonChoice = productList.FirstOrDefault(x => x.AmazonChoice == true);
-            if (amazonChoice != null)
+            productList.ForEach(x =>
             {
-                productsToReturn.Add(amazonChoice);
-            }
+                if (x.StringPrice == string.Empty)
+                {
+                    x.Price = 0;
+                }
+                else
+                {
+                    var totalPriceString = x.StringPrice.Split(' ')[0];
+                    x.Price = double.Parse(totalPriceString.Trim('$'));
+                }
+            });
 
-            // take the numOfProducts lowest scores
-            productList = productList.OrderBy(x => Double.Parse(x.Score)).ToList();
-            return productList.Take(numOfProducts - productsToReturn.Count).ToList();
+            productList = productList.Where(x => x.Price <= maxPrice).ToList();
+
+            int numOfProductsLeft = productList.Count;
+            if (numOfProductsLeft < numOfProducts * 2)
+            {
+                return productList.Take(numOfProducts - productsToReturn.Count).ToList();
+            }
+            else
+            {
+                return productList.Take(numOfProductsLeft / 2).OrderBy(x => Guid.NewGuid()).Take(numOfProducts - productsToReturn.Count).ToList();
+            }
         }
 
-        public async Task<string> SendApiRequest(string query)
+        public async Task<string> SendApiRequestV2(string query)
+        {
+            var queryParam = this.NormalizeQueryIntoQueryParams(query);
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://{this.amazonProductConfiguration.ApiUrl}/search?keywords={queryParam}&marketplace=US"),
+                    Headers =
+                    {
+                        { "X-RapidAPI-Key", this.rapidApiKey },
+                        { "X-RapidAPI-Host", this.amazonProductConfiguration.ApiUrl },
+                    },
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    return body;
+                }
+            }
+        }
+
+        public async Task<string> SendApiRequestV1(string query)
         {
             var queryParam = this.NormalizeQueryIntoQueryParams(query);
             using (var client = new HttpClient())
@@ -94,10 +130,14 @@ namespace GiftSuggestionService.Services
 
                     response.EnsureSuccessStatusCode();
                     var body = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(body);
                     return body;
                 }
             }
+        }
+
+        public string CreateAffiliateLink(string ASIN)
+        {
+            return $"http://www.amazon.com/dp/{ASIN}/ref=nosim?tag={this.amazonAffiliateTag}";
         }
 
         private string NormalizeQueryIntoQueryParams(string query)

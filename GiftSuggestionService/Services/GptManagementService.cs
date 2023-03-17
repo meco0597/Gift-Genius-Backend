@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using OpenAI_API;
 using OpenAI_API.Completions;
 using OpenAI_API.Models;
+using OpenAI_API.Chat;
 
 namespace GiftSuggestionService.Services
 {
@@ -16,35 +17,57 @@ namespace GiftSuggestionService.Services
     {
         private readonly string GptApiKey;
         private readonly EnivronmentConfiguration enivronmentConfiguration;
+        private readonly RequestAccessorService requestAccessorService;
         private readonly GptConfiguration gptConfiguration;
         private readonly OpenAIAPI api;
 
         public GptManagementService(
             KeyvaultAccessorService keyvaultAccessorService,
+            RequestAccessorService requestAccessorService,
             IOptionsMonitor<EnivronmentConfiguration> environmentOptionsMonitor,
             IOptionsMonitor<GptConfiguration> gptOptionsMonitor)
         {
             this.enivronmentConfiguration = environmentOptionsMonitor.CurrentValue;
             this.gptConfiguration = gptOptionsMonitor.CurrentValue;
+            this.requestAccessorService = requestAccessorService;
             this.GptApiKey = keyvaultAccessorService.GetSecretAsync(this.gptConfiguration.SecretName).Result;
             this.api = new OpenAIAPI(new APIAuthentication(this.GptApiKey));
         }
 
-        public async Task<List<GeneratedGiftSuggestion>> GetGiftSuggestions(GiftSuggestionSearchDto searchParams)
+        public async Task<List<GeneratedGiftSuggestion>> GetGiftSuggestions(GiftSuggestionSearchDto searchParams, string version = "ChatV1")
         {
-            string prompt = this.GeneratePromptFromParamsCompact(searchParams);
-            string response = await this.CreateCompletionAsync(prompt);
-            Console.WriteLine(response);
-            return this.ParseGptResponse(response);
+            if (version == "CompletionsV1")
+            {
+                string prompt = this.GenerateCompletionPromptFromParamsV1(searchParams);
+                string response = await this.CreateCompletionAsync(prompt);
+                var generatedGiftSuggestions = this.ParseGptResponse(response);
+                return generatedGiftSuggestions;
+            }
+            else if (version == "ChatV1")
+            {
+                List<ChatMessage> chatPrompt = this.GenerateChatMessagesV1(searchParams);
+                string response = await this.CreateChatRequestAsync(chatPrompt);
+                var generatedGiftSuggestions = this.ParseGptResponse(response);
+                return generatedGiftSuggestions;
+            }
+            else
+            {
+                throw new ArgumentException($"GPT prompt version unknown: {version}");
+            }
         }
 
-        public string GeneratePromptFromParamsV1(GiftSuggestionSearchDto searchParams)
+        public List<ChatMessage> GenerateChatMessagesV1(GiftSuggestionSearchDto searchParams)
         {
-            return "Gift recipient: 5 gifts for my Mom in her Fifties that has an interest in cooking and singing, between $25 and $100 in valid JSON\nGift suggestions:\n[ { \"giftIdea\": \"Cookbook by a celebrity chef\", \"giftCategories\": [ \"cooking\" ], \"estimatedPrice\": \"30-45\", \"giftDescription\": \"A collection of recipes, instructions, and information about the preparation and serving of foods. This gift will allow them to explore unique cooking recipes.\" }, { \"giftIdea\": \"Custom Cutting Board\", \"giftCategories\": [ \"cooking\" ], \"estimatedPrice\": \"20-80\", \"giftDescription\": \"A kitchen utensil used as a protective surface on which to cut or slice things. Add a personal touch by customizing it with their name or initials.\" }, { \"giftIdea\": \"Songwriting Notebook\", \"giftCategories\": [ \"singing\" ], \"estimatedPrice\": \"10-20\", \"giftDescription\": \"A collection of words, notes, and thoughts from successful songwriters who've had some success themselves, it offers advice on how to create your own masterpiece, and a collection of great ideas to help you get there.\" }, { \"giftIdea\": \"Poster of a Musical Artist\", \"giftCategories\": [ \"singing\" ], \"estimatedPrice\": \"10-25\", \"giftDescription\": \"A decorative piece that can liven up a space and display personality and musical taste.\" }, { \"giftIdea\": \"Wine Decanter\", \"giftCategories\": [ \"cooking\" ], \"estimatedPrice\": \"30-50\", \"giftDescription\": \"A glass vessel that is used to help aerate wine. For the home cook who serves wine with every meal.\" } ]\n\n" +
-            $"Gift recipient: 5 gifts for my {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {searchParams.AssociatedAge} that has an interest in {string.Join(", ", searchParams.AssociatedInterests)} between ${searchParams.MinPrice} and ${searchParams.MaxPrice} in valid JSON\nGift suggestions:";
+            return new List<ChatMessage>()
+            {
+                new ChatMessage(ChatMessageRole.System, "You are an assistant that comes up with creative and useful gift suggestions."),
+                new ChatMessage(ChatMessageRole.User, "Come up with 5 gift suggestions for my mom in her Fifties that has an interest in cooking, singing that are under $100"),
+                new ChatMessage(ChatMessageRole.Assistant, "Gift Idea: Cookbook by a celebrity chef\nGift Categories: cooking\n\nGift Idea: Custom Cutting Board\nGift Categories: cooking\n\nGift Idea: Songwriting Notebook\nGift Categories: singing\n\nGift Idea: Poster of a Musical Artist\nGift Categories: singing\n\nGift Idea: Wine Decanter\nGift Categories: cooking"),
+                new ChatMessage(ChatMessageRole.User, $"Come up with 5 gift suggestions for my {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {searchParams.AssociatedAge} that has an interest in {string.Join(", ", searchParams.AssociatedInterests)} that are under ${searchParams.MaxPrice}")
+            };
         }
 
-        public string GeneratePromptFromParamsCompact(GiftSuggestionSearchDto searchParams)
+        public string GenerateCompletionPromptFromParamsV1(GiftSuggestionSearchDto searchParams)
         {
             return "Gift recipient: My Mom in her Fifties that has an interest in cooking and singing\n5 Gift suggestions under $100:\n\nGift Idea: Cookbook by a celebrity chef\nGift Categories: cooking\n\nGift Idea: Custom Cutting Board\nGift Categories: cooking\n\nGift Idea: Songwriting Notebook\nGift Categories: singing\n\nGift Idea: Poster of a Musical Artist\nGift Categories: singing\n\nGift Idea: Wine Decanter\nGift Categories: cooking\n\n" +
             $"Gift recipient: My {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {searchParams.AssociatedAge} that has an interest in {string.Join(", ", searchParams.AssociatedInterests)}\n5 Gift suggestions under ${searchParams.MaxPrice}:";
@@ -61,7 +84,25 @@ namespace GiftSuggestionService.Services
                 frequencyPenalty: 0.5,
                 presencePenalty: 0));
 
+            Console.WriteLine($"Response from OpenAi: Prompt Version=CompletionsV1 Latency={result.ProcessingTime} Tokens={result.Usage.TotalTokens} Prompt={prompt}");
             return result.Completions.First().Text;
+        }
+
+        public async Task<string> CreateChatRequestAsync(List<ChatMessage> messages)
+        {
+            var result = await api.Chat.CreateChatCompletionAsync(new ChatRequest()
+            {
+                Model = Model.ChatGPTTurbo,
+                Messages = messages,
+                Temperature = 0.7,
+                MaxTokens = 2048,
+                TopP = 1,
+                FrequencyPenalty = 0.5,
+                PresencePenalty = 0.1
+            });
+
+            Console.WriteLine($"Response from OpenAi: Prompt Version=ChatV1 Latency={result.ProcessingTime} Tokens={result.Usage.TotalTokens} Request Message={messages[3].Content}");
+            return result.Choices.First().Message.Content;
         }
 
         private List<GeneratedGiftSuggestion> ParseGptResponse(string gptResponse)
@@ -93,6 +134,7 @@ namespace GiftSuggestionService.Services
             for (int i = 0; i < ideasAndCategories.Count; i += 2)
             {
                 var categories = ideasAndCategories[i + 1].Split(',', options: StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList();
+                Console.WriteLine($"Generated Gift Idea: CorrelationId={this.requestAccessorService.GetCorrelationId()} Name={ideasAndCategories[i]} Category={string.Join(", ", categories)}");
                 toReturn.Add(new GeneratedGiftSuggestion()
                 {
                     Name = ideasAndCategories[i],
