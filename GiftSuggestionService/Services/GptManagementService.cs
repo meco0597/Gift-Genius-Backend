@@ -63,7 +63,7 @@ namespace GiftSuggestionService.Services
                 new ChatMessage(ChatMessageRole.System, "You are an assistant that comes up with creative and useful gift suggestions."),
                 new ChatMessage(ChatMessageRole.User, "Come up with 5 gift suggestions for my mom in her Fifties that has an interest in cooking, singing that are under $100"),
                 new ChatMessage(ChatMessageRole.Assistant, "Gift Idea: Cookbook by a celebrity chef\nGift Categories: cooking\n\nGift Idea: Custom Cutting Board\nGift Categories: cooking\n\nGift Idea: Songwriting Notebook\nGift Categories: singing\n\nGift Idea: Poster of a Musical Artist\nGift Categories: singing\n\nGift Idea: Wine Decanter\nGift Categories: cooking"),
-                new ChatMessage(ChatMessageRole.User, $"Come up with 5 gift suggestions for my {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {searchParams.AssociatedAge} that has an interest in {string.Join(", ", searchParams.AssociatedInterests)} that are under ${searchParams.MaxPrice}")
+                new ChatMessage(ChatMessageRole.User, $"Come up with 5 gift suggestions for my {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {this.GetAgeVerbage(searchParams.AssociatedAge)}, that has an interest in {string.Join(", ", searchParams.AssociatedInterests)} that are under ${searchParams.MaxPrice}")
             };
         }
 
@@ -143,6 +143,20 @@ namespace GiftSuggestionService.Services
             }
 
             return toReturn;
+        }
+
+        private string GetAgeVerbage(AgeDescriptor ageDescriptor)
+        {
+            switch (ageDescriptor)
+            {
+                case AgeDescriptor.Toddler:
+                case AgeDescriptor.Preschool:
+                case AgeDescriptor.Gradeschool:
+                case AgeDescriptor.MiddleSchool:
+                    return $"{ageDescriptor} years";
+                default:
+                    return ageDescriptor.ToString();
+            }
         }
 
         private string GetGiftCategoriesFromLine(string line)

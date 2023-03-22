@@ -14,8 +14,8 @@ namespace GiftSuggestionService.Dtos
 
         public List<string> AssociatedInterests { get; set; }
 
-        public RelationshipDescriptor? AssociatedRelationship { get; set; }
+        public RelationshipDescriptor AssociatedRelationship { get; set; }
 
-        public AgeDescriptor? AssociatedAge { get; set; }
+        public AgeDescriptor AssociatedAge { get; set; }
     }
 }

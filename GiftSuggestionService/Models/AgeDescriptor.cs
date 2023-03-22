@@ -6,10 +6,15 @@ namespace GiftSuggestionService.Models
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum AgeDescriptor
     {
-        PreTeens,
+        // default
+        Thirties = 0,
+
+        Toddler,
+        Preschool,
+        Gradeschool,
+        MiddleSchool,
         Teens,
         Twenties,
-        Thirties,
         Forties,
         Fifties,
         Sixties,

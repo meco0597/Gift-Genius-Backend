@@ -44,10 +44,10 @@ MyApp.getInitialProps = async (myAppContext) => {
 
   const pageProps = myAppContext.Component.getInitialProps
     ? await myAppContext.Component.getInitialProps(
-        myAppContext.ctx,
-        backendClient,
-        data.loggedInUser
-      )
+      myAppContext.ctx,
+      backendClient,
+      data.loggedInUser
+    )
     : {};
 
   return {

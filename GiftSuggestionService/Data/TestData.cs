@@ -53,7 +53,7 @@ namespace GiftSuggestionService.Data
                 MaxPrice = 25,
                 AssociatedInterests = new List<string>() { "soccer" },
                 AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Father, RelationshipDescriptor.Boyfriend, RelationshipDescriptor.Son },
-                AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Forties, AgeDescriptor.Teens, AgeDescriptor.PreTeens },
+                AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Forties, AgeDescriptor.Teens, AgeDescriptor.MiddleSchool },
                 NumOfUpvotes = 1341,
             },
             new GiftSuggestion()
@@ -65,7 +65,7 @@ namespace GiftSuggestionService.Data
                 MaxPrice = 30,
                 AssociatedInterests = new List<string>() { "skateboarding" },
                 AssociatedRelationships = new List<RelationshipDescriptor>() { RelationshipDescriptor.Boyfriend, RelationshipDescriptor.Son, RelationshipDescriptor.Brother },
-                AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Teens, AgeDescriptor.PreTeens },
+                AssociatedAgeRanges = new List<AgeDescriptor>() { AgeDescriptor.Twenties, AgeDescriptor.Teens, AgeDescriptor.MiddleSchool },
                 NumOfUpvotes = 131,
             }
         };

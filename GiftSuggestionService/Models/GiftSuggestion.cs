@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace GiftSuggestionService.Models
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public class GiftSuggestion
     {
         public string Id { get; set; }

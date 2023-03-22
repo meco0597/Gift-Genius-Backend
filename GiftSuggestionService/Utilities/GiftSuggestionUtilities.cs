@@ -65,7 +65,6 @@ namespace GiftSuggestionService.Utilities
                     break;
                 case AgeDescriptor.Twenties:
                 case AgeDescriptor.Teens:
-                case AgeDescriptor.PreTeens:
                 default:
                     break;
             }
