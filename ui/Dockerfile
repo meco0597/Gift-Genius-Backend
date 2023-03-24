@@ -30,8 +30,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 8080
 
-ENV PORT 3000
+ENV PORT 8080
 
 CMD ["npm", "start"]

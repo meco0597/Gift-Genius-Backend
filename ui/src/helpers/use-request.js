@@ -7,7 +7,7 @@ const useRequest = ({ url, method, data, onSuccess }) => {
   const sendRequest = async (props = {}) => {
     try {
       setError(null);
-      const result = await axios[method](url, {...data, ...props});
+      const result = await axios[method](url, { ...data, ...props });
 
       if (onSuccess) {
         onSuccess(result.data);
@@ -22,6 +22,4 @@ const useRequest = ({ url, method, data, onSuccess }) => {
   return { sendRequest, error };
 };
 
-const uiURL = process.env.NEXT_PUBLIC_SITE_URL;
-
-export { useRequest, uiURL };
+export { useRequest };

@@ -30,6 +30,43 @@
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
+        },
+        {
+            "name": "Attach",
+            "port": 9229,
+            "request": "attach",
+            "cwd": "${workspaceFolder}/ui",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node"
+        },
+        {
+            "name": "Next.js: debug server-side",
+            "type": "node-terminal",
+            "cwd": "${workspaceFolder}/ui",
+            "request": "launch",
+            "command": "npm run dev"
+        },
+        {
+            "name": "Next.js: debug client-side",
+            "type": "pwa-chrome",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/ui",
+            "url": "http://localhost:5001"
+        },
+        {
+            "name": "Next.js: debug full stack",
+            "type": "node-terminal",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/ui",
+            "command": "npm run dev",
+            "console": "integratedTerminal",
+            "serverReadyAction": {
+                "pattern": "started server on .+, url: (https?://.+)",
+                "uriFormat": "%s",
+                "action": "debugWithChrome"
+            }
         }
     ]
 }

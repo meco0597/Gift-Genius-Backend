@@ -18,14 +18,8 @@ namespace GiftSuggestionService.Models
             var associatedRelationships = new List<RelationshipDescriptor>();
             int minPrice = int.MaxValue;
             int maxPrice = int.MinValue;
-            if (searchParams.AssociatedAge != null)
-            {
-                associatedAges.Add((AgeDescriptor)searchParams.AssociatedAge);
-            }
-            if (searchParams.AssociatedRelationship != null)
-            {
-                associatedRelationships.Add((RelationshipDescriptor)searchParams.AssociatedRelationship);
-            }
+            associatedRelationships.Add((RelationshipDescriptor)searchParams.AssociatedRelationship);
+            associatedAges.Add((AgeDescriptor)searchParams.AssociatedAge);
             if (searchParams.MinPrice != null)
             {
                 minPrice = (int)searchParams.MinPrice;

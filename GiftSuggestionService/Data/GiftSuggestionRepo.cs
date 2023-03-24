@@ -58,18 +58,12 @@ namespace GiftSuggestionService.Data
                 filter &= interestsFilter;
             }
 
-            if (searchParams.AssociatedAge != null)
-            {
-                var ageRanges = GiftSuggestionUtilities.GetNearbyAges((AgeDescriptor)searchParams.AssociatedAge);
-                var ageFilter = filterBuilder.AnyIn(x => x.AssociatedAgeRanges, ageRanges);
-                filter &= ageFilter;
-            }
+            var ageRanges = GiftSuggestionUtilities.GetNearbyAges((AgeDescriptor)searchParams.AssociatedAge);
+            var ageFilter = filterBuilder.AnyIn(x => x.AssociatedAgeRanges, ageRanges);
+            filter &= ageFilter;
 
-            if (searchParams.AssociatedRelationship != null)
-            {
-                var relationshipFilter = filterBuilder.AnyEq(x => x.AssociatedRelationships, (RelationshipDescriptor)searchParams.AssociatedRelationship);
-                filter &= relationshipFilter;
-            }
+            var relationshipFilter = filterBuilder.AnyEq(x => x.AssociatedRelationships, (RelationshipDescriptor)searchParams.AssociatedRelationship);
+            filter &= relationshipFilter;
 
             return await this.giftSuggestionsCollection.Find(filter).ToListAsync();
         }
