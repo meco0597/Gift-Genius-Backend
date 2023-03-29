@@ -1,24 +1,19 @@
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import client from "../../helpers/axios-client";
-import { useEffect } from "react";
-
 import styles from "../../styles/Home.module.css";
-import { useRequest } from "../../helpers/use-request";
-import MsgErrors from "../../helpers/nonValidationErr";
-import axiosSrv from "../../helpers/axios-client";
-import { headers } from "../../../next.config";
 
 export default function GiftSuggestions({ suggestions }) {
     return (
         <div className={styles.container}>
+            <h1 style={{ marginTop: '50px' }}>Your Gift Ideas</h1>
             {suggestions.map((suggestion) => (
                 <div key={suggestion.title} className={styles.card}>
                     <Image
                         className="my-12 w-full"
                         src={suggestion.thumbnailUrl}
                         alt={suggestion.title}
+                        style={{ objectFit: 'fill' }}
                         width={100}
                         height={100}
                         priority
@@ -28,13 +23,16 @@ export default function GiftSuggestions({ suggestions }) {
                         title={suggestion.title}
                         target="_blank"
                     >
-                        {suggestion.title}
+                        {truncate(suggestion.title)}
                     </Link>
                 </div>
             ))}
         </div>
     );
 };
+
+const truncate = (input) =>
+    input?.length > 100 ? `${input.substring(0, 90)}...` : input;
 
 export async function getServerSideProps(context) {
     if (!context.query.associatedRelationship ||
@@ -48,7 +46,7 @@ export async function getServerSideProps(context) {
         return true
     }
 
-    let response = await client.post('http://givr.centralus.cloudapp.azure.com:5001/api/giftsuggestions', {
+    let response = await client.post(process.env.BACKEND_URL + '/api/giftsuggestions', {
         associatedRelationship: context.query.associatedRelationship,
         pronoun: context.query.pronoun,
         associatedAge: context.query.associatedAge,

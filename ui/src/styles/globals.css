@@ -2,17 +2,16 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  display: block;
+  justify-content: center;
+  width: 100%;
+  font-family: poppins, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif !important;
 }
 
 a {
   color: inherit;
   text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
 }
 
 form {
@@ -25,7 +24,9 @@ form {
 label {
   display: table;
   width: 100%;
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  text-align: left;
   color: #3b3b3b;
 }
 
@@ -37,11 +38,23 @@ input {
   border-radius: 0.25rem;
   box-sizing: border-box;
   margin-bottom: 2.5rem;
+  flex-direction: column;
+}
+
+.form-range {
+  margin-bottom: 1rem;
+  scrollbar-color: #3756A1 !important;
 }
 
 input:focus {
   outline: none;
-  border-color: #0070f3;
+  border-color: #3756A1;
+}
+
+.btn-primary {
+  background-color: #3756A1 !important;
+  border-color: #3756A1 !important;
+  justify-content: center !important;
 }
 
 button {
@@ -52,21 +65,21 @@ button {
   border-radius: 0.25rem;
   box-sizing: border-box;
   margin-bottom: 2.5rem;
-  background-color: #0070f3;
+  background-color: #3756A1;
   color: #fff;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #0060e9;
+  background-color: #3756A1;
 }
 
 .container {
   min-height: 100vh;
   padding: 0 0.5rem;
-  display: flex;
+  display: grid;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center !important;
   align-items: center;
   height: 100vh;
 }

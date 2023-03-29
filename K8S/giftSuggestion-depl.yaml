@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: gift-suggestions-depl
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: gift-suggestion-service
@@ -23,10 +23,13 @@ spec:
         - name: gift-suggestion-service
           image: givrprodacr.azurecr.io/gift-suggestion-service:latest
           imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 5000
           resources:
             requests:
-              cpu: 250m
-              memory: 350Mi
+              cpu: 150m
+              memory: 250Mi
             limits:
               memory: "900Mi"
               cpu: "700m"
@@ -42,5 +45,5 @@ spec:
   ports:
     - name: gift-suggestion-service
       protocol: TCP
-      port: 5001
-      targetPort: 5001
+      port: 80
+      targetPort: 5000

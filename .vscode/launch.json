@@ -1,5 +1,15 @@
 {
     "version": "0.2.0",
+    "compounds": [
+        {
+            "name": "backend + frontend",
+            "configurations": [
+                ".NET Core Launch (web)",
+                "Next.js: debug full stack"
+            ],
+            "stopAll": true
+        }
+    ],
     "configurations": [
         {
             // Use IntelliSense to find out which attributes exist for C# debugging
@@ -11,7 +21,9 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/GiftSuggestionService/bin/Debug/net6.0/GiftSuggestionService.dll",
-            "args": [],
+            "args": [
+                "urls=http://localhost:5000"
+            ],
             "cwd": "${workspaceFolder}/GiftSuggestionService",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
@@ -25,35 +37,6 @@
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
-        },
-        {
-            "name": "Attach",
-            "port": 9229,
-            "request": "attach",
-            "cwd": "${workspaceFolder}/ui",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "pwa-node"
-        },
-        {
-            "name": "Next.js: debug server-side",
-            "type": "node-terminal",
-            "cwd": "${workspaceFolder}/ui",
-            "request": "launch",
-            "command": "npm run dev"
-        },
-        {
-            "name": "Next.js: debug client-side",
-            "type": "pwa-chrome",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/ui",
-            "url": "http://localhost:5001"
         },
         {
             "name": "Next.js: debug full stack",

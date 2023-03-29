@@ -1,0 +1,16 @@
+$theme-colors: (
+    'primary': #3756A1,
+    'secondary': #833bec,
+    'success': #1ce1ac,
+    'info': #ff7d50,
+    'warning': #ffbe0b,
+    'danger': #ff007f,
+    'light': #f4f4f4,
+    'dark': #001738,
+);
+
+.input-group {
+    justify-content: center;
+}
+
+@import '/node_modules/bootstrap/scss/bootstrap.scss';

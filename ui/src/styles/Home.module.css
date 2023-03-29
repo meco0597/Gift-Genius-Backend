@@ -4,15 +4,37 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  margin: 0;
+  align-self: center;
+  text-align: center;
+}
+
+.loader {
+  min-height: 100vh;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  padding-top: 50%;
 }
 
 .main {
-  padding: 5rem 0;
+  padding: 0 0;
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center start;
+}
+
+.home-banner {
+  text-align: "center";
+  margin: 50 50 50;
+  padding: '10 10';
+}
+
+.header {
+  width: 100%;
 }
 
 .footer {
@@ -63,7 +85,7 @@
 .custom_button {
   border: none;
   background: none;
-  color: #0d6efd;
+  color: #3756A1;
   border-radius: 5px;
   padding: 0;
   display: contents;
@@ -106,19 +128,27 @@
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  width: 45%;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  font-size: medium;
+  justify-content: space-around;
 }
 
-.card:hover,
+.card:hovers,
 .card:focus,
 .card:active {
-  color: #0070f3;
-  border-color: #0070f3;
+  color: #3756A1;
+  border-color: #3756A1;
 }
 
 .card h2 {
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
+}
+
+.card image {
+  margin: 10;
 }
 
 .card p {
@@ -143,8 +173,7 @@
 .menu {
   width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
-  max-width: 1024px;
+  padding: 0 0;
   text-align: center;
 }
 
@@ -160,7 +189,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   z-index: 1;
   color: black;
 }

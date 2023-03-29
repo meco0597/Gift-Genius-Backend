@@ -77,7 +77,7 @@ namespace GiftSuggestionService.Controllers
 
             // ask amazon for 3 (3 is default for now) products with the lowest relavancy score
             Dictionary<string, Task<List<AmazonProductResponseModelv2>>> queryProductMapping = this.amazonProductManagementService.GetAmazonProductDetailsFromListOfQueries(
-                generatedGiftSuggestions.Select(x => x.Name).ToList(), searchParams.MaxPrice, numOfProducts: 3).Result;
+                generatedGiftSuggestions.Select(x => x.Name).ToList(), searchParams.MaxPrice, numOfProducts: 2).Result;
 
             // Create and store the product models into the DB
             List<Product> products = new List<Product>();

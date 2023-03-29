@@ -30,6 +30,5 @@ yarn-error.log*
 
 # vercel
 .vercel
-
-Scripts/env-vars
-**/env-vars
+env-vars/
+/env-vars

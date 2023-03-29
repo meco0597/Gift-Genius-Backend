@@ -21,11 +21,7 @@ namespace GiftSuggestionService
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://localhost:5001");
-                    // webBuilder.ConfigureKestrel((context, options) =>
-                    // {
-                    //     options.Listen(IPAddress.Any, 5001);
-                    // });
+                    webBuilder.UseKestrel();
                 });
     }
 }

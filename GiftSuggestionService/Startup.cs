@@ -39,7 +39,6 @@ namespace GiftSuggestionService
             services.Configure<AmazonProductConfiguration>(Configuration.GetSection("AmazonProductConfiguration"));
             services.AddHttpContextAccessor();
 
-            //services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
@@ -63,7 +62,7 @@ namespace GiftSuggestionService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GiftSuggestionService v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseRouting();

@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path')
+
 const nextConfig = {
   reactStrictMode: false,
   webpackDevMiddleware: config => {
@@ -10,6 +12,9 @@ const nextConfig = {
   },
   images: {
     domains: ["m.media-amazon.com"],
+  },
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')],
   },
 };
 

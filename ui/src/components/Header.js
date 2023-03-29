@@ -1,9 +1,9 @@
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
+import Image from "next/image";
 
 const Header = ({ loggedInUser }) => {
   const hrefLinks = [
-    { href: "/", text: "Find Gifts" },
 
     { href: "/about", text: "About" },
 
@@ -16,8 +16,21 @@ const Header = ({ loggedInUser }) => {
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <div className={styles.navbar_links}>
             <Link href="/" title="Givr" className={styles.navbar_brand}>
-              Givr
+              <Image
+                className="my- w-full"
+                src="/GivrLogo.png"
+                alt="Givr Logo"
+                width={73}
+                height={47}
+                priority
+              />
             </Link>
+            <Link style={{ color: "white", padding: 0, maxWidth: '110px' }} className="nav-link" href="/" key="/" title="Find gifts">
+              <button className="btn btn-primary" href="/" type="submit">
+                Find Gifts
+              </button>
+            </Link>
+
             {hrefLinks.map(({ href, text }) => (
               <Link className="nav-link" href={href} key={href} title={text}>
                 {text}
@@ -25,8 +38,8 @@ const Header = ({ loggedInUser }) => {
             ))}
           </div>
         </nav>
-      </div>
-    </header>
+      </div >
+    </header >
   );
 };
 

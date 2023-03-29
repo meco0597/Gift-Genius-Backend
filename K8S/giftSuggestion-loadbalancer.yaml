@@ -10,8 +10,8 @@ spec:
   loadBalancerIP: 20.9.21.31
   externalTrafficPolicy: Local
   ports:
-    - port: 5001
-      targetPort: 5001
+    - port: 80
+      targetPort: 80
       protocol: TCP
       name: gift-suggestion-service
   selector:
