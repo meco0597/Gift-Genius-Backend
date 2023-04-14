@@ -90,7 +90,7 @@ namespace GiftSuggestionService.Controllers
                     {
                         Id = $"amazon_{x.ASIN}",
                         Title = x.Title,
-                        ThumbnailUrl = x.ThumbnailUrl,
+                        ThumbnailUrl = GiftSuggestionUtilities.ResizeThumbnailImage(x.ThumbnailUrl),
                         Link = this.amazonProductManagementService.CreateAffiliateLink(x.ASIN),
                         Price = x.Price,
                     };

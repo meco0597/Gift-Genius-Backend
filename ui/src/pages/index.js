@@ -1,6 +1,7 @@
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
 import Router from "next/router";
+import MultiselectWithCreate from "../components/MultiselectWithCreate";
 
 const Home = () => {
   const [associatedRelationship, setAssociatedRelationship] = useState("Friend");
@@ -28,8 +29,8 @@ const Home = () => {
               <h1></h1>
               <label>I&apos;m looking for a gift for...</label>
               <label>Relationship:</label>
-              <select className="form-select" onSelect={e => setAssociatedRelationship(e.target.value)} aria-label="Default select example">
-                <option selected>Friend</option>
+              <select className="form-select" onChange={e => setAssociatedRelationship(e.target.value)} aria-label="Default select example">
+                <option value="Friend">Friend</option>
                 <option value="Sister">Sister</option>
                 <option value="Brother">Brother</option>
                 <option value="Mother">Mother</option>
@@ -47,20 +48,21 @@ const Home = () => {
               </select>
 
               <label>Pronoun:</label>
-              <select className="form-select" onSelect={e => setProunoun(e.target.value)} aria-label="Default select example">
-                <option selected>His</option>
+              <select className="form-select" onChange={e => setProunoun(e.target.value)} aria-label="Default select example">
+                <option value="His">His</option>
                 <option value="Her">Her</option>
                 <option value="Their">Their</option>
               </select>
 
               <label>Age:</label>
-              <select className="form-select" onSelect={e => setAssociatedAge(e.target.value)} aria-label="Default select example">
-                <option selected>Twenties</option>
+              <select className="form-select" value={"Twenties"} onChange={e => setAssociatedAge(e.target.value)} aria-label="Default select example">
                 <option value="Toddler">Toddler</option>
                 <option value="Preschool">Preschool</option>
                 <option value="Gradeschool">Gradeschool</option>
                 <option value="MiddleSchool">MiddleSchool</option>
                 <option value="Teens">Teens</option>
+                <option value="Twenties">Twenties</option>
+                <option value="Thirties">Thirties</option>
                 <option value="Forties">Forties</option>
                 <option value="Fifties">Fifties</option>
                 <option value="Sixties">Sixties</option>
@@ -69,8 +71,8 @@ const Home = () => {
                 <option value="Nineties">Nineties</option>
               </select>
 
-              <label htmlFor="interests">Interests separated by comma</label>
-              <textarea className="form-control" placeholder="Camping, Golfing, Chicago Bears" onChange={e => setAssociatedInterests(e.target.value)} id="interests" rows="2"></textarea>
+              <label htmlFor="interests">Interests:</label>
+              <MultiselectWithCreate setAssociatedInterests={setAssociatedInterests} />
 
               <label htmlFor="maxPrice" className="form-label">Max Price: ${maxPrice}</label>
               <input type="range" className="form-range" onChange={e => setMaxPrice(e.target.value)} min="10" value={maxPrice} max="500" step="5" id="customRange3"></input>

@@ -71,5 +71,12 @@ namespace GiftSuggestionService.Utilities
 
             return toReturn;
         }
+
+        public static string ResizeThumbnailImage(string thumbnailUrl)
+        {
+            string newUrl = thumbnailUrl.Replace("_UL320_", "_UL640_");
+            newUrl = newUrl.Replace("_SL160_", "_AC_UL640_");
+            return newUrl;
+        }
     }
 }
