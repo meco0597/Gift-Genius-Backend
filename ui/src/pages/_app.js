@@ -49,11 +49,10 @@ const MyApp = ({ Component, pageProps }) => {
 
       <footer className={styles.footer}>
         <a
-          href={"/"}
-          target="_blank"
+          href={"/affiliate-disclosure"}
           rel="noopener noreferrer"
         >
-          Powered by Givr{" "}
+          Affiliate Disclosure{" "}
           <span className={styles.logo}>
           </span>
         </a>

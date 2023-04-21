@@ -60,10 +60,10 @@ namespace GiftSuggestionService.Services
         {
             return new List<ChatMessage>()
             {
-                new ChatMessage(ChatMessageRole.System, "You are an assistant that comes up with creative and useful gift suggestions."),
-                new ChatMessage(ChatMessageRole.User, "Come up with 5 gift suggestions for my mom in her Fifties that has an interest in cooking, singing that are under $100"),
-                new ChatMessage(ChatMessageRole.Assistant, "Gift Idea: Cookbook by a celebrity chef\nGift Categories: cooking\n\nGift Idea: Custom Cutting Board\nGift Categories: cooking\n\nGift Idea: Songwriting Notebook\nGift Categories: singing\n\nGift Idea: Poster of a Musical Artist\nGift Categories: singing\n\nGift Idea: Wine Decanter\nGift Categories: cooking"),
-                new ChatMessage(ChatMessageRole.User, $"Come up with 5 gift suggestions for my {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {this.GetAgeVerbage(searchParams.AssociatedAge)}, that has an interest in {string.Join(", ", searchParams.AssociatedInterests)} that are under ${searchParams.MaxPrice}")
+                new ChatMessage(ChatMessageRole.System, "You are a gifting expert who helps people find creative, useful, and unique gift ideas. You will be given a max price and information about the gift recipients age, sex, and interests, as well as the relationship to the person seeking the gift ideas. You will then provide 10 gift suggestions that match these constraints that are can be found on Amazon."),
+                new ChatMessage(ChatMessageRole.User, "Come up with gift suggestions for my mom in her Fifties that has an interest in cooking, singing that are under $100"),
+                new ChatMessage(ChatMessageRole.Assistant, "Gift Idea: Instant Pot Duo 7-in-1 Electric Pressure Cooker\nGift Categories: cooking\n\nGift Idea: Personalized Recipe Book\nGift Categories: cooking\n\nGift Idea: Singing Machine Karaoke System\nGift Categories: singing\n\nGift Idea: Music-themed Kitchen Accessories\nGift Categories: singing, cooking\n\nGift Idea: Cookware Set\nGift Categories: cooking\n\nGift Idea: Cookbook Stand\nGift Categories: cooking\n\nGift Idea: Customized Apron\nGift Categories: cooking\n\nGift Idea: Online Cooking Class Subscription\nGift Categories: cooking\n\nGift Idea: Wireless Bluetooth Microphone\nGift Categories: singing\n\nGift Idea: Herb Garden Starter Kit\nGift Categories: cooking"),
+                new ChatMessage(ChatMessageRole.User, $"Come up with gift suggestions for my {searchParams.AssociatedRelationship} in {searchParams.Pronoun} {this.GetAgeVerbage(searchParams.AssociatedAge)}, that has an interest in {string.Join(", ", searchParams.AssociatedInterests)} that are under ${searchParams.MaxPrice}")
             };
         }
 

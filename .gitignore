@@ -33,3 +33,10 @@ yarn-error.log*
 
 Scripts/env-vars
 **/env-vars
+
+DatabaseMigrations
+
+GiftSuggestionService/obj/
+GiftSuggestionService/bin/
+givr_ai.csr
+GiftSuggestionService/bin/*

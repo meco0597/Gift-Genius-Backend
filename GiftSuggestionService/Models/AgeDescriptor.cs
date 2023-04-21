@@ -8,7 +8,6 @@ namespace GiftSuggestionService.Models
     {
         // default
         Thirties = 0,
-
         Toddler,
         Preschool,
         Gradeschool,

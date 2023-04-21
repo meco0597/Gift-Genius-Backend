@@ -26,7 +26,7 @@ namespace GiftSuggestionService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IGiftSuggestionRepo, GiftSuggestionRepo>();
-            services.AddSingleton<IProductRepo, ProductRepo>();
+            services.AddSingleton<IAmazonProductRepo, AmazonProductRepo>();
             services.AddSingleton<KeyvaultAccessorService>();
             services.AddSingleton<GptManagementService>();
             services.AddSingleton<AmazonProductManagementService>();

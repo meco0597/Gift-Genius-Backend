@@ -8,13 +8,13 @@ const Header = ({ loggedInUser }) => {
 
     { href: "/about", text: "About" },
 
-    { href: "/feedback", text: "Give us Feedback" },
+    { href: "/affiliate-disclosure", text: "Affiliate Disclosure" },
   ];
 
   return (
     <header className={styles.header}>
       <div className={styles.menu}>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-light">
           <div className={styles.navbar_links}>
             <Link href="/" title="Givr" className={styles.navbar_brand}>
               <Image

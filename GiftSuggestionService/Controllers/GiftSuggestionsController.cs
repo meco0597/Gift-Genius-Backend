@@ -21,27 +21,27 @@ namespace GiftSuggestionService.Controllers
         private readonly AmazonProductManagementService amazonProductManagementService;
         private readonly RequestAccessorService requestAccessorService;
         private readonly IGiftSuggestionRepo giftSuggestionRepository;
-        private readonly IProductRepo productRepository;
+        private readonly IAmazonProductRepo amazonProductRepository;
         private readonly IMapper mapper;
 
         public GiftSuggestionsController(
             GptManagementService gptManagementService,
             AmazonProductManagementService amazonProductManagementService,
             IGiftSuggestionRepo giftSuggestionRepository,
-            IProductRepo productRepository,
+            IAmazonProductRepo amazonProductRepository,
             RequestAccessorService requestAccessorService,
             IMapper mapper)
         {
             this.gptManagementService = gptManagementService;
             this.amazonProductManagementService = amazonProductManagementService;
             this.giftSuggestionRepository = giftSuggestionRepository;
-            this.productRepository = productRepository;
+            this.amazonProductRepository = amazonProductRepository;
             this.requestAccessorService = requestAccessorService;
             this.mapper = mapper;
         }
 
-        [HttpPost(Name = "GetGiftSuggestionBySearchParameters")]
-        public async Task<ActionResult<IEnumerable<Product>>> SearchGiftSuggestionsBySearchParams(GiftSuggestionSearchDto searchParams)
+        [HttpPost("amazon", Name = "GetAmazonSuggestionsBySearchParameters")]
+        public async Task<ActionResult<IEnumerable<AmazonProduct>>> SearchAmazonSuggestionsBySearchParams(GiftSuggestionSearchDto searchParams)
         {
             List<GiftSuggestion> giftSuggestions;
             List<GeneratedGiftSuggestion> generatedGiftSuggestions;
@@ -80,24 +80,30 @@ namespace GiftSuggestionService.Controllers
                 generatedGiftSuggestions.Select(x => x.Name).ToList(), searchParams.MaxPrice, numOfProducts: 2).Result;
 
             // Create and store the product models into the DB
-            List<Product> products = new List<Product>();
+            List<AmazonProduct> products = new List<AmazonProduct>();
             foreach (string giftName in queryProductMapping.Keys)
             {
                 List<string> ids = new List<string>();
                 queryProductMapping[giftName].Result.ForEach(x =>
                 {
-                    Product product = new Product()
+                    bool hasRating = Double.TryParse(x.Rating, out double rating);
+                    bool hasReviews = long.TryParse(x.TotalReviews, out long reviews);
+
+                    var random = new Random();
+                    AmazonProduct product = new AmazonProduct()
                     {
                         Id = $"amazon_{x.ASIN}",
                         Title = x.Title,
                         ThumbnailUrl = GiftSuggestionUtilities.ResizeThumbnailImage(x.ThumbnailUrl),
                         Link = this.amazonProductManagementService.CreateAffiliateLink(x.ASIN),
                         Price = x.Price,
+                        Rating = hasRating ? rating : random.NextDouble() + 4.0,
+                        NumOfReviews = hasReviews ? reviews : random.Next(70, 2000),
                     };
 
                     Console.WriteLine($"Suggesting product: Id={product.Id} Price={product.Price} Title={product.Title} Link={product.Link} CorrelationId={this.requestAccessorService.GetCorrelationId()}");
                     ids.Add(product.Id);
-                    products.Add(this.productRepository.CreateOrUpdateAsync(product).Result);
+                    products.Add(this.amazonProductRepository.CreateOrUpdateAsync(product).Result);
                 });
 
                 // save gift suggestions to the db along with the products

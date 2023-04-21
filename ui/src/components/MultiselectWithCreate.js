@@ -23,22 +23,32 @@ const MultiselectWithCreate = ({ setAssociatedInterests }) => {
         setInterests(data => [newOption, ...data])
     }
 
-
-
     return (
         <Autocomplete
-            style={{ minWidth: '100%' }}
+            style={{ minWidth: '100%', alignItems: "flex-end" }}
             multiple
             onChange={(event, value) => {
+                handleCreate(value);
                 setAssociatedInterests(value.join(','));
             }}
-            id="size-medium-outlined-multi"
-            size="medium"
+            id="tags-outlined"
             freeSolo={true}
             options={initialListOfInterests}
             noOptionsText="Hit Enter to Add Interest"
             autoSelect={true}
+            autoHighlight={true}
+            filterSelectedOptions
+            onInputChange={(event, newInputValue) => {
+                if (newInputValue.endsWith(',')) {
+                    event.target.blur()
+                    event.target.focus()
+                }
+            }}
             filterOptions={(options, params) => {
+                if (params.inputValue == "") {
+                    return []
+                }
+
                 const filtered = filter(options, params);
 
                 if (params.inputValue !== "") {
@@ -48,7 +58,9 @@ const MultiselectWithCreate = ({ setAssociatedInterests }) => {
                 return filtered;
             }}
             renderInput={(params) => (
-                <TextField {...params} />
+                <TextField {...params}
+                    placeholder={value.length === 0 ? 'E.g. Cooking, Going on Hikes, Camping' : ''}
+                />
             )}
         />
     )

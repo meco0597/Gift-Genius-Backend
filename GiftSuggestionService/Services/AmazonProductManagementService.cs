@@ -78,7 +78,7 @@ namespace GiftSuggestionService.Services
             }
             else
             {
-                return productList.Take(numOfProductsLeft / 2).OrderBy(x => Guid.NewGuid()).Take(numOfProducts - productsToReturn.Count).ToList();
+                return productList.OrderBy(x => Guid.NewGuid()).Take(numOfProducts - productsToReturn.Count).ToList();
             }
         }
 

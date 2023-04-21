@@ -5,7 +5,8 @@ body {
   display: block;
   justify-content: center;
   width: 100%;
-  font-family: poppins, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  background-color: rgb(248, 248, 248) !important;
+  font-family: poppins thin, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif !important;
 }
 
@@ -30,6 +31,15 @@ label {
   color: #3b3b3b;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 325 !important;
+}
+
 input {
   display: table;
   width: 100%;
@@ -52,8 +62,6 @@ input:focus {
 }
 
 .btn-primary {
-  background-color: #3756A1 !important;
-  border-color: #3756A1 !important;
   justify-content: center !important;
 }
 
@@ -65,7 +73,6 @@ button {
   border-radius: 0.25rem;
   box-sizing: border-box;
   margin-bottom: 2.5rem;
-  background-color: #3756A1;
   color: #fff;
   cursor: pointer;
 }

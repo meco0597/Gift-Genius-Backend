@@ -43,7 +43,7 @@ namespace GiftSuggestionService.Filters
 
                 if (status >= HttpStatusCode.InternalServerError)
                 {
-                    Console.Error.WriteLine("OnException: Unhandled Server Error", exceptionToLog);
+                    Console.Error.WriteLine($"OnException: Unhandled Server Error!!     Exception:{exceptionToLog?.Message} InnerException:{exceptionToLog?.InnerException} StackTrace:{exceptionToLog?.StackTrace} SourceFile:{exceptionToLog.Source}");
                 }
                 else
                 {
