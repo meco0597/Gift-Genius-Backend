@@ -9,6 +9,7 @@ import Router from "next/router";
 import { Jelly } from '@uiball/loaders'
 
 import Head from "next/head";
+import Link from "next/link";
 
 const MyApp = ({ Component, pageProps }) => {
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ const MyApp = ({ Component, pageProps }) => {
   }, []);
 
   return (
-    <div>
+    <div style={{ height: '100%', minHeight: '100vh' }}>
       <Head>
         <title>Givr - AI Powered Gift Idea Generator</title>
         <meta
@@ -38,24 +39,31 @@ const MyApp = ({ Component, pageProps }) => {
           content="Discuss and share thoughts or ideas"
         />
         <link rel="icon" href="/GivrLogoSmall.png" />
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </Head>
       <Header />
 
       {loading ? (
         <Loader />
       ) : (
-        <Component {...pageProps} />
+        <div className={styles.wrapper}>
+          <Component {...pageProps} />
+        </div>
       )}
 
       <footer className={styles.footer}>
-        <a
-          href={"/affiliate-disclosure"}
-          rel="noopener noreferrer"
-        >
-          Affiliate Disclosure{" "}
-          <span className={styles.logo}>
-          </span>
-        </a>
+        <div className="container-fluid bg-light py-3 mt-auto">
+          <div className="row">
+            <div className="col-md-6">
+              <p className="text-muted mb-0">© Givr 2023. All rights reserved.</p>
+            </div>
+            <div className="col-md-6">
+              <Link href="/affiliate-disclosure" className="text-muted">
+                Affiliate Disclosure
+              </Link>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );

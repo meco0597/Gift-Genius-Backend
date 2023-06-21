@@ -7,6 +7,9 @@ using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Linq;
+using Polly;
+using Polly.Retry;
+using System.Collections.Concurrent;
 
 namespace GiftSuggestionService.Services
 {
@@ -24,25 +27,26 @@ namespace GiftSuggestionService.Services
             this.rapidApiKey = keyvaultAccessorService.GetSecretAsync(this.amazonProductConfiguration.SecretName).Result;
         }
 
-        public async Task<Dictionary<string, Task<List<AmazonProductResponseModelv2>>>> GetAmazonProductDetailsFromListOfQueries(List<string> queries, int? nullableMaxPrice, int numOfProducts = 5)
+        public async Task<Dictionary<string, List<AmazonProductResponseModelv2>>> GetAmazonProductDetailsFromListOfQueries(List<string> queries, int? nullableMaxPrice, int numOfProducts = 5)
         {
             int maxPrice = nullableMaxPrice ?? 50;
-            Dictionary<string, Task<List<AmazonProductResponseModelv2>>> queryToProduct = new Dictionary<string, Task<List<AmazonProductResponseModelv2>>>();
+            var queryToProduct = new Dictionary<string, List<AmazonProductResponseModelv2>>();
 
-            foreach (string query in queries)
+            var tasks = queries.Select(async query =>
             {
                 try
                 {
-                    var task = this.ChooseAmazonProducts(query, maxPrice, numOfProducts);
-                    queryToProduct.Add(query, task);
+                    var products = await this.ChooseAmazonProducts(query, maxPrice, numOfProducts);
+                    queryToProduct.Add(query, products);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Exception calling the Amazon API: Exception={ex.Message} InnerException={ex.InnerException}");
                 }
-            }
+            });
 
-            await Task.WhenAll(queryToProduct.Values.ToArray());
+            await Task.WhenAll(tasks);
+
             return queryToProduct;
         }
 
@@ -51,9 +55,16 @@ namespace GiftSuggestionService.Services
             List<AmazonProductResponseModelv2> productsToReturn = new List<AmazonProductResponseModelv2>();
 
             // search amazon for the query
-            var amazonResponseString = await this.SendApiRequestV2(productQuery);
-
-            var productList = JsonSerializer.Deserialize<List<AmazonProductResponseModelv2>>(amazonResponseString);
+            List<AmazonProductResponseModelv2> productList;
+            try
+            {
+                var amazonResponseString = await this.SendApiRequestV2(productQuery);
+                productList = JsonSerializer.Deserialize<List<AmazonProductResponseModelv2>>(amazonResponseString);
+            }
+            catch (Exception)
+            {
+                return new List<AmazonProductResponseModelv2>();
+            }
 
             // Filter by max price
             productList.ForEach(x =>
@@ -85,6 +96,11 @@ namespace GiftSuggestionService.Services
         public async Task<string> SendApiRequestV2(string query)
         {
             var queryParam = this.NormalizeQueryIntoQueryParams(query);
+
+            var retryPolicy = Policy.Handle<HttpRequestException>()
+                .OrResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+                .WaitAndRetryAsync(2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+
             using (var client = new HttpClient())
             {
                 var request = new HttpRequestMessage
@@ -97,7 +113,7 @@ namespace GiftSuggestionService.Services
                         { "X-RapidAPI-Host", this.amazonProductConfiguration.ApiUrl },
                     },
                 };
-                using (var response = await client.SendAsync(request))
+                using (var response = await retryPolicy.ExecuteAsync(() => client.SendAsync(request)))
                 {
                     response.EnsureSuccessStatusCode();
                     var body = await response.Content.ReadAsStringAsync();

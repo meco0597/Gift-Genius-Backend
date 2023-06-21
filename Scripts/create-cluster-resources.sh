@@ -30,4 +30,4 @@ az role assignment create --role "Managed Identity Operator" --assignee $AksMana
 az role assignment create --role "Virtual Machine Contributor" --assignee $AksManagedIdentity --scope /subscriptions/$SubscriptionId/resourcegroups/$NodeResourceGroupName
 az role assignment create --role "AcrPull" --assignee $AksManagedIdentity --scope /subscriptions/$SubscriptionId/resourcegroups/$NodeResourceGroupName
 
-
+#kubectl create secret tls ssl-cert-secret --cert=./givr_ai.crt --key=./givr_ai.key

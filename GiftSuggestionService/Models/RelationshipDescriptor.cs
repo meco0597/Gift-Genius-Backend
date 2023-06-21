@@ -7,27 +7,20 @@ namespace GiftSuggestionService.Models
     {
         Friend,
 
-        Sister,
-        Brother,
+        Partner,
 
-        Mother,
-        Father,
+        Sibling,
 
-        Girlfriend,
-        Boyfriend,
+        Parent,
 
-        Wife,
-        Husband,
+        Child,
 
-        Grandma,
-        Grandpa,
+        Grandparent,
 
-        Daughter,
-        Son,
+        Relative,
 
-        Cousin,
+        Colleague,
 
-        Aunt,
-        Uncle,
+        Acquaintance,
     }
 }

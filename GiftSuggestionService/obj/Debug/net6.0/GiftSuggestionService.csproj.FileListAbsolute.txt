@@ -210,3 +210,4 @@
 /Users/mbosnjak/repos/Givr/GiftSuggestionService/obj/Debug/net6.0/GiftSuggestionService.pdb
 /Users/mbosnjak/repos/Givr/GiftSuggestionService/obj/Debug/net6.0/GiftSuggestionService.genruntimeconfig.cache
 /Users/mbosnjak/repos/Givr/GiftSuggestionService/obj/Debug/net6.0/ref/GiftSuggestionService.dll
+/Users/mbosnjak/repos/Givr/GiftSuggestionService/bin/Debug/net6.0/Polly.dll

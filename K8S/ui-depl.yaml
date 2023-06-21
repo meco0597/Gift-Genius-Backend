@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: givr-ui
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -30,12 +31,14 @@ spec:
               cpu: "1100m"
           ports:
             - containerPort: 8080
+            - containerPort: 443
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ui-clusterip-srv
+  name: givr-ui
+  namespace: default
 spec:
   selector:
     app: givr-ui
@@ -45,3 +48,7 @@ spec:
       protocol: TCP
       port: 8080
       targetPort: 8080
+    - name: givr-ui-https
+      protocol: TCP
+      port: 443
+      targetPort: 443

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Autocomplete, {
     createFilterOptions
 } from '@mui/material/Autocomplete'
@@ -9,9 +9,16 @@ import { minWidth } from '@mui/system';
 
 const filter = createFilterOptions();
 
-const MultiselectWithCreate = ({ setAssociatedInterests }) => {
+const MultiselectWithCreate = ({ setAssociatedInterests, focus }) => {
     const [value, setValue] = useState([]);
     const [interests, setInterests] = useState(initialListOfInterests);
+    let inputRef;
+
+    useEffect(() => {
+        if (focus) {
+            inputRef.focus();
+        }
+    }, [focus]);
 
     function handleCreate(name) {
         let newOption = { name, id: interests.length + 1 }
@@ -59,6 +66,9 @@ const MultiselectWithCreate = ({ setAssociatedInterests }) => {
             }}
             renderInput={(params) => (
                 <TextField {...params}
+                    inputRef={input => {
+                        inputRef = input;
+                    }}
                     placeholder={value.length === 0 ? 'E.g. Cooking, Going on Hikes, Camping' : ''}
                 />
             )}
@@ -67,4 +77,3 @@ const MultiselectWithCreate = ({ setAssociatedInterests }) => {
 }
 
 export default MultiselectWithCreate;
-

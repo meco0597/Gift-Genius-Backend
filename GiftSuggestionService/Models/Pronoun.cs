@@ -6,8 +6,8 @@ namespace GiftSuggestionService.Models
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Pronoun
     {
-        Their = 0,
-        His,
-        Her,
+        They = 0,
+        He,
+        She,
     }
 }

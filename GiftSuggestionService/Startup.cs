@@ -67,9 +67,8 @@ namespace GiftSuggestionService
 
             app.UseRouting();
 
-            //sapp.UseAuthorization();
+            //app.UseAuthorization();
 
-            app.UseMiddleware<CorrelationMiddleware>();
             app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
             app.UseEndpoints(endpoints =>

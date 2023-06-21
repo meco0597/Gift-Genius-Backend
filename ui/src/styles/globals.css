@@ -1,13 +1,26 @@
 html,
-body {
+body,
+main,
+#__next {
   padding: 0;
   margin: 0;
   display: block;
   justify-content: center;
   width: 100%;
+  min-height: 100%;
   background-color: rgb(248, 248, 248) !important;
   font-family: poppins thin, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif !important;
+}
+
+#__next {
+  min-height: 100%;
+  position: relative;
+}
+
+.wrapper {
+  min-height: 100vh;
+  height: 100%;
 }
 
 a {
@@ -79,6 +92,7 @@ button {
 
 button:hover {
   background-color: #3756A1;
+  text-decoration-color: white;
 }
 
 .container {

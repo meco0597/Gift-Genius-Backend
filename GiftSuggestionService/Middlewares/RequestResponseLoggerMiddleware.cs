@@ -16,7 +16,9 @@ public class RequestResponseLoggingMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        Console.WriteLine(FormatRequest(context.Request));
+        string correlationId = Guid.NewGuid().ToString();
+        context.Request.Headers.Add("correlation-id", correlationId);
+        Console.WriteLine(FormatRequest(context.Request, correlationId));
 
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
@@ -26,18 +28,16 @@ public class RequestResponseLoggingMiddleware
         stopWatch.Stop();
         var requestTimeInMilliseconds = stopWatch.ElapsedMilliseconds;
 
-        Console.WriteLine(FormatResponse(context.Response, requestTimeInMilliseconds));
+        Console.WriteLine(FormatResponse(context.Response, requestTimeInMilliseconds, correlationId));
     }
 
-    private string FormatRequest(HttpRequest request)
+    private string FormatRequest(HttpRequest request, string correlationId)
     {
-        string correlationId = request.Headers["correlation-id"];
-        return $"Incoming Request: CorrelationId={correlationId} Scheme={request.Scheme} RequestUrl={request.Host}{request.Path} Query={request.QueryString}";
+        return $"Incoming Request: Scheme={request.Scheme} Method={request.Method} RequestUrl={request.Host}{request.Path} Query={request.QueryString} CorrelationId={correlationId}";
     }
 
-    private string FormatResponse(HttpResponse response, long elapsedMilliseconds)
+    private string FormatResponse(HttpResponse response, long elapsedMilliseconds, string correlationId)
     {
-        string correlationId = response.Headers["correlation-id"];
-        return $"Response: CorrelationId={correlationId} Latency={elapsedMilliseconds} Status={response.StatusCode}";
+        return $"Response: Latency={elapsedMilliseconds} Status={response.StatusCode} CorrelationId={correlationId}";
     }
 }

@@ -86,6 +86,7 @@ namespace GiftSuggestionService.Data
                     AssociatedInterests = giftSuggestion.AssociatedInterests,
                     AssociatedAgeRanges = giftSuggestion.AssociatedAgeRanges,
                     AssociatedRelationships = giftSuggestion.AssociatedRelationships,
+                    AssociatedPronouns = giftSuggestion.AssociatedPronouns,
                     NumOfUpvotes = 0,
                     NumOfClicks = 0,
                     NumOfTimesSuggested = 1,
@@ -96,10 +97,11 @@ namespace GiftSuggestionService.Data
             }
             else
             {
-                exisitingGiftSuggestion.AssociatedInterests = exisitingGiftSuggestion.AssociatedInterests.Intersect(giftSuggestion.AssociatedInterests).ToList();
-                exisitingGiftSuggestion.AssociatedAgeRanges = exisitingGiftSuggestion.AssociatedAgeRanges.Intersect(giftSuggestion.AssociatedAgeRanges).ToList();
-                exisitingGiftSuggestion.AssociatedRelationships = exisitingGiftSuggestion.AssociatedRelationships.Intersect(giftSuggestion.AssociatedRelationships).ToList();
-                exisitingGiftSuggestion.ProductIds = exisitingGiftSuggestion.ProductIds.Intersect(giftSuggestion.ProductIds).ToList();
+                exisitingGiftSuggestion.AssociatedInterests = giftSuggestion.AssociatedInterests?.Union(exisitingGiftSuggestion.AssociatedInterests ?? new List<string>()).ToList();
+                exisitingGiftSuggestion.AssociatedAgeRanges = giftSuggestion.AssociatedAgeRanges?.Union(exisitingGiftSuggestion.AssociatedAgeRanges ?? new List<AgeDescriptor>()).ToList();
+                exisitingGiftSuggestion.AssociatedRelationships = giftSuggestion.AssociatedRelationships?.Union(exisitingGiftSuggestion.AssociatedRelationships ?? new List<RelationshipDescriptor>()).ToList();
+                exisitingGiftSuggestion.AssociatedPronouns = giftSuggestion.AssociatedPronouns?.Union(exisitingGiftSuggestion.AssociatedPronouns ?? new List<Pronoun>()).ToList();
+                exisitingGiftSuggestion.ProductIds = giftSuggestion.ProductIds?.Union(exisitingGiftSuggestion.ProductIds ?? new List<string>()).ToList();
                 // update 
                 GiftSuggestion updatedGiftSuggestion = new GiftSuggestion()
                 {
@@ -108,6 +110,7 @@ namespace GiftSuggestionService.Data
                     CreatedAt = exisitingGiftSuggestion.CreatedAt,
                     MinPrice = Math.Min(giftSuggestion.MinPrice, exisitingGiftSuggestion.MinPrice),
                     MaxPrice = Math.Max(giftSuggestion.MaxPrice, exisitingGiftSuggestion.MaxPrice),
+                    AssociatedPronouns = exisitingGiftSuggestion.AssociatedPronouns,
                     ProductIds = exisitingGiftSuggestion.ProductIds,
                     AssociatedInterests = exisitingGiftSuggestion.AssociatedInterests,
                     AssociatedAgeRanges = exisitingGiftSuggestion.AssociatedAgeRanges,

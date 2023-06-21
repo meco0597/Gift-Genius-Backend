@@ -18,6 +18,7 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.0",
           "MongoDB.Driver": "2.18.0",
           "OpenAI": "1.6.0",
+          "Polly": "7.2.3",
           "RabbitMQ.Client": "6.2.2",
           "RestClient.Net": "5.1.0",
           "Swashbuckle.AspNetCore": "5.6.3"
@@ -640,6 +641,14 @@
           }
         }
       },
+      "Polly/7.2.3": {
+        "runtime": {
+          "lib/netstandard2.0/Polly.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.2.3.0"
+          }
+        }
+      },
       "RabbitMQ.Client/6.2.2": {
         "dependencies": {
           "System.Memory": "4.5.4",
@@ -1250,6 +1259,13 @@
       "sha512": "sha512-j4LeK4p4g0j+JCdajypWVEFLuD7hnRanO7BhfXDogTPHc6q6JA/DgD8voEG9l6jN0SprSFO4cmQ/Lrk0h+knug==",
       "path": "openai/1.6.0",
       "hashPath": "openai.1.6.0.nupkg.sha512"
+    },
+    "Polly/7.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DeCY0OFbNdNxsjntr1gTXHJ5pKUwYzp04Er2LLeN3g6pWhffsGuKVfMBLe1lw7x76HrPkLxKEFxBlpRxS2nDEQ==",
+      "path": "polly/7.2.3",
+      "hashPath": "polly.7.2.3.nupkg.sha512"
     },
     "RabbitMQ.Client/6.2.2": {
       "type": "package",

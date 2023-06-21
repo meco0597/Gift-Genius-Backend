@@ -5,16 +5,13 @@ import "react-widgets/styles.css";
 
 const Header = ({ loggedInUser }) => {
   const hrefLinks = [
-
-    { href: "/about", text: "About" },
-
     { href: "/affiliate-disclosure", text: "Affiliate Disclosure" },
   ];
 
   return (
     <header className={styles.header}>
       <div className={styles.menu}>
-        <nav className="navbar navbar-expand-lg navbar-light">
+        <nav style={{ backgroundColor: 'white' }} className="navbar navbar-expand-lg">
           <div className={styles.navbar_links}>
             <Link href="/" title="Givr" className={styles.navbar_brand}>
               <Image
@@ -33,7 +30,7 @@ const Header = ({ loggedInUser }) => {
             </Link>
 
             {hrefLinks.map(({ href, text }) => (
-              <Link className="nav-link" href={href} key={href} title={text}>
+              <Link style={{ fontSize: '14px', color: 'rgb(100, 100, 100)' }} className="nav-link" href={href} key={href} title={text}>
                 {text}
               </Link>
             ))}

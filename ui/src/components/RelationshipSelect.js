@@ -17,21 +17,15 @@ const RelationshipSelect = (props) => (
 );
 
 const options = [
-    { label: 'Friend', value: 'Friend' },
-    { label: 'Sister', value: 'Sister' },
-    { label: 'Brother', value: 'Brother' },
-    { label: 'Mother', value: 'Mother' },
-    { label: 'Father', value: 'Father' },
-    { label: 'Girlfriend', value: 'Girlfriend' },
-    { label: 'Boyfriend', value: 'Boyfriend' },
-    { label: 'Wife', value: 'Wife' },
-    { label: 'Husband', value: 'Husband' },
-    { label: 'Grandma', value: 'Grandma' },
-    { label: 'Daughter', value: 'Daughter' },
-    { label: 'Son', value: 'Son' },
-    { label: 'Cousin', value: 'Cousin' },
-    { label: 'Aunt', value: 'Aunt' },
-    { label: 'Uncle', value: 'Uncle' }
+    { label: 'Friend', value: 'friend' },
+    { label: 'Partner', value: 'partner' },
+    { label: 'Sibling', value: 'sibling' },
+    { label: 'Parent', value: 'parent' },
+    { label: 'Child', value: 'child' },
+    { label: 'Grandparent', value: 'grandparent' },
+    { label: 'Relative', value: 'relative' },
+    { label: 'Colleague', value: 'colleague' },
+    { label: 'Acquaintance', value: 'acquaintance' },
 ];
 
 export default RelationshipSelect;

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace GiftSuggestionService.Models
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public class GiftSuggestion
     {
         public string Id { get; set; }
@@ -21,9 +21,14 @@ namespace GiftSuggestionService.Models
 
         public List<string> AssociatedInterests { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
         public List<RelationshipDescriptor> AssociatedRelationships { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
         public List<AgeDescriptor> AssociatedAgeRanges { get; set; }
+
+        [BsonRepresentation(BsonType.String)]
+        public List<Pronoun> AssociatedPronouns { get; set; }
 
         public long NumOfUpvotes { get; set; }
 

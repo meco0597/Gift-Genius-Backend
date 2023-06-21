@@ -39,4 +39,8 @@ DatabaseMigrations
 GiftSuggestionService/obj/
 GiftSuggestionService/bin/
 givr_ai.csr
+givr_ai.key
+givr_ai.crt
+givr_ai.p7b
+givr_ai.ca-bundle
 GiftSuggestionService/bin/*

@@ -18,9 +18,9 @@ const PronounSelect = (props) => (
 );
 
 const options = [
-    { label: 'He', value: 'His' },
-    { label: 'She', value: 'Her' },
-    { label: 'They', value: 'Their' },
+    { label: 'He', value: 'he' },
+    { label: 'She', value: 'she' },
+    { label: 'They', value: 'they' },
 ];
 
 export default PronounSelect;
