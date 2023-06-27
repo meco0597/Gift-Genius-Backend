@@ -32,7 +32,6 @@ const MultiselectWithCreate = ({ setAssociatedInterests, focus }) => {
 
     return (
         <Autocomplete
-            style={{ minWidth: '100%', alignItems: "flex-end" }}
             multiple
             onChange={(event, value) => {
                 handleCreate(value);

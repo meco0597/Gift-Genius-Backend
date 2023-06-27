@@ -6,7 +6,7 @@ import Header from "../components/Header";
 import Loader from "../components/Loader";
 import { useEffect, useState } from 'react'
 import Router from "next/router";
-import { Jelly } from '@uiball/loaders'
+import CssBaseline from '@mui/material/CssBaseline';
 
 import Head from "next/head";
 import Link from "next/link";
@@ -31,7 +31,7 @@ const MyApp = ({ Component, pageProps }) => {
   }, []);
 
   return (
-    <div style={{ height: '100%', minHeight: '100vh' }}>
+    <div>
       <Head>
         <title>Givr - AI Powered Gift Idea Generator</title>
         <meta
@@ -39,10 +39,11 @@ const MyApp = ({ Component, pageProps }) => {
           content="Discuss and share thoughts or ideas"
         />
         <link rel="icon" href="/GivrLogoSmall.png" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <Header />
 
+      <CssBaseline />
       {loading ? (
         <Loader />
       ) : (
@@ -52,7 +53,7 @@ const MyApp = ({ Component, pageProps }) => {
       )}
 
       <footer className={styles.footer}>
-        <div className="container-fluid bg-light py-3 mt-auto">
+        <div className="container-fluid py-3">
           <div className="row">
             <div className="col-md-6">
               <p className="text-muted mb-0">© Givr 2023. All rights reserved.</p>
