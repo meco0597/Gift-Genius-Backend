@@ -1,19 +1,28 @@
 import React from 'react';
-
-const RelationshipOption = ({ label, value }) => (
-    <option value={value}>{label}</option>
-);
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import Box from '@mui/material/Box';
 
 const RelationshipSelect = (props) => (
-    <select className="form-select" value={props.currentValue} onChange={props.onChange}>
-        {options.map((option) => (
-            <RelationshipOption
-                key={option.value}
-                label={option.label}
-                value={option.value}
-            />
-        ))}
-    </select>
+    <Box sx={{ minWidth: '100%' }}>
+        <FormControl fullWidth>
+            <InputLabel id="relationship-select-label">Relationship</InputLabel>
+            <Select
+                sx={{ backgroundColor: 'rgba(250, 250, 250,  0.50)' }}
+                labelId="relationship-select-label"
+                id="demo-simple-select"
+                value={props.currentValue}
+                label="Relationship"
+                onChange={props.onChange}
+            >
+                {options.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+    </Box>
 );
 
 const options = [

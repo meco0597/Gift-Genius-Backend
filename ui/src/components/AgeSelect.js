@@ -1,11 +1,10 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import client from '../helpers/axios-client';
-
-
-const AgeOption = ({ label, value }) => (
-    <option value={value}>{label}</option>
-);
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import Box from '@mui/material/Box';
 
 const AgeSelect = (props) => {
     // const [currentValue, setCurrentValue] = useState(props.currentValue);
@@ -30,15 +29,20 @@ const AgeSelect = (props) => {
     // };
 
     return (
-        <select className="form-select" value={props.currentValue} onChange={props.onChange}>
-            {options.map((option) => (
-                <AgeOption
-                    key={option.value}
-                    label={option.label}
-                    value={option.value}
-                />
-            ))}
-        </select>
+        <Box sx={{ minWidth: '100%' }}>
+            <FormControl fullWidth>
+                <Select
+                    style={{ backgroundColor: 'rgba(250, 250, 250,  0.50)' }}
+                    id="demo-simple-select"
+                    value={props.currentValue}
+                    onChange={props.onChange}
+                >
+                    {options.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </Box>
     );
 };
 

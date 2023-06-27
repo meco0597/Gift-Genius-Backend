@@ -4,7 +4,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 const PronounSelect = (props) => (
     <ToggleButtonGroup
-        sx={{ width: '100%', height: '50px' }}
+        sx={{ width: '100%', height: '50px', backgroundColor: 'rgba(250, 250, 250,  0.50)' }}
         value={props.currentValue} onChange={props.onChange}
         color='primary'
         exclusive

@@ -11,7 +11,7 @@ const Header = ({ loggedInUser }) => {
   return (
     <header className={styles.header}>
       <div className={styles.menu}>
-        <nav style={{ backgroundColor: 'white' }} className="navbar navbar-expand-lg">
+        <nav className="navbar navbar-expand-lg">
           <div className={styles.navbar_links}>
             <Link href="/" title="Givr" className={styles.navbar_brand}>
               <Image

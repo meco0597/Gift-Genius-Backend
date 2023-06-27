@@ -16,6 +16,9 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
+  unstable_includeFiles: [
+    'node_modules/next/dist/compiled/@edge-runtime/primitives/**/*.+(js|json)',
+  ],
 };
 
 

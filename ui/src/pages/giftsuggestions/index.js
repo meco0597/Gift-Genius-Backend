@@ -6,7 +6,9 @@ import client from '../../helpers/axios-client';
 import styles from '../../styles/Home.module.css';
 import AmazonProductContent from '../../components/AmazonProductContent';
 import LRUCache from 'lru-cache';
-import { maxWidth } from '@mui/system';
+import { useExitIntent } from 'use-exit-intent'
+import { Modal, Box, Typography, TextField, Button } from '@mui/material';
+
 
 const cache = new LRUCache({
     max: 500,
@@ -22,7 +24,75 @@ function shuffleArray(array) {
     return shuffledArray;
 }
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '95%',
+    maxWidth: 400,
+    bgcolor: 'rgba(250, 250, 250, 0.95);',
+    borderRadius: '25px',
+    boxShadow: 24,
+    p: 4,
+};
+
 function GiftSuggestions({ suggestions, recipientParameters }) {
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const { registerHandler } = useExitIntent({
+        "cookie": {
+            "daysToExpire": 30,
+            "key": "use-exit-intent"
+        },
+        "desktop": {
+            "triggerOnIdle": true,
+            "useBeforeUnload": true,
+            "triggerOnMouseLeave": true,
+            "delayInSecondsToTrigger": 3
+        },
+        "mobile": {
+            "triggerOnIdle": true,
+            "delayInSecondsToTrigger": 3
+        }
+    })
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    const handleSubmit = () => {
+        if (validateEmail(email)) {
+            // Perform email submission logic here
+            console.log('Email submitted:', email);
+            // Reset the email input field
+            setEmail('');
+            // Close the modal
+            handleClose();
+        } else {
+            setEmailError('Invalid email address');
+        }
+    };
+
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    };
+
+    const handleModalClose = () => {
+        setEmail('');
+        setEmailError('');
+        handleClose();
+    };
+
+    registerHandler({
+        id: 'openModal',
+        handler: () => setOpen(true)
+    })
+
     if (!suggestions || suggestions.length === 0) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -35,39 +105,73 @@ function GiftSuggestions({ suggestions, recipientParameters }) {
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <h1 style={{ marginTop: '20px', textAlign: 'center' }}>Your Gift Ideas!</h1>
-                <div className={styles.suggestions}>
-                    {suggestions.map((suggestion) => (
-                        <div title={suggestion.title} key={suggestion.title} className={styles.card}>
-                            <div style={{ width: '50%', height: '0', paddingBottom: '40%', position: 'relative' }}>
-                                <Image
-                                    src={suggestion.thumbnailUrl}
-                                    alt={suggestion.title}
-                                    style={{ objectFit: 'contain', position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}
-                                    width={150}
-                                    height={150}
-                                    href={suggestion.link}
-                                    target="_blank"
-                                    priority
-                                />
-                            </div>
-                            <AmazonProductContent suggestion={suggestion} />
-                        </div>
-                    ))}
-                </div>
+        <>
+            <Modal
+                open={open}
+                onClose={handleModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography sx={{ textAlign: 'center' }} id="modal-modal-title" variant="h4" component="h2">
+                        Don&apos;t lose your gift suggestions!
+                    </Typography>
+                    <TextField
+                        label="Email"
+                        value={email}
+                        onChange={handleEmailChange}
+                        fullWidth
+                        sx={{ mt: 2 }}
+                        error={Boolean(emailError)}
+                        helperText={emailError}
+                    />
+                    <Button variant="contained" onClick={handleSubmit} sx={{ mt: 2 }}>
+                        Submit
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={handleClose}
+                        sx={{ mt: 1 }}
+                    >
+                        Cancel
+                    </Button>
+                </Box>
+            </Modal>
 
+            <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'rgba(250, 250, 250,  0.85)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h1 style={{ marginTop: '20px', textAlign: 'center' }}>Your Gift Ideas!</h1>
+                    <div className={styles.suggestions}>
+                        {suggestions.map((suggestion) => (
+                            <div title={suggestion.title} key={suggestion.title} className={styles.card}>
+                                <div style={{ width: '50%', height: '0', paddingBottom: '40%', position: 'relative' }}>
+                                    <Image
+                                        src={suggestion.thumbnailUrl}
+                                        alt={suggestion.title}
+                                        style={{ objectFit: 'contain', position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}
+                                        width={150}
+                                        height={150}
+                                        href={suggestion.link}
+                                        target="_blank"
+                                        priority
+                                    />
+                                </div>
+                                <AmazonProductContent suggestion={suggestion} />
+                            </div>
+                        ))}
+                    </div>
+
+                </div >
+                <div className={styles.tryAgainCard}>
+                    <p style={{ fontSize: '16px' }}>Not what you&apos;re looking for?</p>
+                    <Link
+                        style={{ textDecoration: 'none' }}
+                        href={`/?maxPrice=${recipientParameters.maxPrice}&associatedRelationship=${recipientParameters.associatedRelationship}&pronoun=${recipientParameters.pronoun}&associatedAge=${recipientParameters.associatedAge}`}>
+                        <button className="btn btn-primary" style={{ padding: '10px 20px', fontSize: '14px', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Try Different Interests</button>
+                    </Link>
+                </div>
             </div >
-            <div className={styles.tryAgainCard}>
-                <p style={{ fontSize: '16px' }}>Not what you&apos;re looking for?</p>
-                <Link
-                    style={{ textDecoration: 'none' }}
-                    href={`/?maxPrice=${recipientParameters.maxPrice}&associatedRelationship=${recipientParameters.associatedRelationship}&pronoun=${recipientParameters.pronoun}&associatedAge=${recipientParameters.associatedAge}`}>
-                    <button className="btn btn-primary" style={{ padding: '10px 20px', fontSize: '14px', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Try Different Interests</button>
-                </Link>
-            </div>
-        </div >
+        </>
     );
 }
 

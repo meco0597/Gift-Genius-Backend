@@ -7,6 +7,7 @@ import RelationshipSelect from "../components/RelationshipSelect";
 import Slider from '@mui/material/Slider';
 import styles from "../styles/Home.module.css";
 import { getListItemSecondaryActionClassesUtilityClass } from "@mui/material";
+import HowItWorks from "../components/HowItWorks";
 
 const Home = () => {
   const router = useRouter();
@@ -55,7 +56,7 @@ const Home = () => {
   return (
     <main className={styles.main}>
       <div className="home-banner" style={{ textAlign: 'center', marginTop: '50px', marginBottom: '30px' }}>
-        <h1>Give The Perfect Gift 🎁</h1>
+        <h1>Give The Perfect Gift </h1>
         <h5>AI Powered Gift Suggestions That Simplify The Joy of Gift Giving.</h5>
       </div>
       <div className={styles.container}>
@@ -107,6 +108,7 @@ const Home = () => {
           </div>
         </form>
       </div>
+      <HowItWorks />
     </main>
   );
 };
