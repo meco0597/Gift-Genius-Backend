@@ -7,19 +7,14 @@ import axios from "axios";
 
 const AmazonProductContent = ({ suggestion }) => {
 
-    // const handleClick = async (e, suggestion) => {
-    //     e.preventDefault();
-    //     const { href } = e.target;
-    //     try {
-    //         const incrementClickPromise = axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/giftsuggestions/amazon/${suggestion.id}/clicks/increment`);
-    //         incrementClickPromise.catch((error) => console.error(error)); // Log errors, but do not throw them
-    //         const newTab = window.open('', '_blank');
-    //         newTab.location.href = href;
-    //     } catch (error) {
-    //         console.error(error);
-    //         window.open(href, '_blank');
-    //     }
-    // };
+    const handleClick = async (e, suggestion) => {
+        try {
+            const incrementClickPromise = axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/giftsuggestions/amazon/${suggestion.id}/clicks/increment`);
+            incrementClickPromise.catch((error) => console.error(error)); // Log errors, but do not throw them
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%', paddingLeft: '8px', width: '100%' }}>
@@ -27,7 +22,7 @@ const AmazonProductContent = ({ suggestion }) => {
                 <Link
                     style={{ fontSize: '11px' }}
                     href={suggestion.link}
-                    //onClick={(event) => handleClick(event, suggestion)}
+                    onClick={(event) => handleClick(event, suggestion)}
                     target="_blank"
                 >
                     {truncate(suggestion.title)}
@@ -56,7 +51,7 @@ const AmazonProductContent = ({ suggestion }) => {
                     sx={{ flexGrow: '2', backgroundColor: '#66ffe', maxWidth: '200px', borderRadius: '5px', fontSize: "10px" }}
                     size='small'
                     href={suggestion.link}
-                    //onClick={(event) => handleClick(event, suggestion)}
+                    onClick={(event) => handleClick(event, suggestion)}
                     target="_blank"
                     variant="contained"
                 >

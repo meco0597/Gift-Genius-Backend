@@ -8,11 +8,21 @@ const Loader = () => {
     "Asking the AI model for the best gift ideas...",
     "Finding unique and thoughtful gift suggestions...",
     "Unleashing the power of AI to curate amazing gifts...",
+    "Preparing a personalized list of gift recommendations...",
+    "Unlocking the secrets of perfect gift-giving...",
+    "Crafting handpicked gift suggestions just for you...",
+    "Harnessing the magic of AI to discover the perfect presents...",
+    "Delivering gift ideas tailored to your preferences...",
+    "Exploring a world of creativity to inspire your gifting..."
   ];
 
   useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      setProgress((prevProgress) => prevProgress + Math.random() * 10);
+      setProgress((prevProgress) => prevProgress + Math.random() * 15);
     }, 1000);
 
     return () => {
@@ -32,7 +42,7 @@ const Loader = () => {
 
   return (
     <div className="loader-container">
-      <Card sx={{ backgroundColor: 'rgba(250, 250, 250,  0.5)', minWidth: '70vw', maxWidth: '90vw', borderColor: 'rgb(100, 100, 100)' }}>
+      <Card sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', minWidth: '70vw', maxWidth: '90vw', borderColor: 'rgb(100, 100, 100)' }}>
         <CardContent>
           <Typography sx={{ animation: '$fade-in 1s linear infinite' }} variant="h7" color={'rgb(80, 80, 80)'} component="div" gutterBottom>
             {headers[headerIndex]}

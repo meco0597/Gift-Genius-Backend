@@ -7,12 +7,14 @@ import styles from '../../styles/Home.module.css';
 import AmazonProductContent from '../../components/AmazonProductContent';
 import LRUCache from 'lru-cache';
 import { useExitIntent } from 'use-exit-intent'
-import { Modal, Box, Typography, TextField, Button } from '@mui/material';
-
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, TextField, Fab } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
+import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
 
 const cache = new LRUCache({
     max: 500,
-    maxAge: 1000 * 60 * 2, // cache for 2 minutes
+    maxAge: 1000 * 60 * 4, // cache for 2 minutes
 });
 
 function shuffleArray(array) {
@@ -24,39 +26,25 @@ function shuffleArray(array) {
     return shuffledArray;
 }
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '95%',
-    maxWidth: 400,
-    bgcolor: 'rgba(250, 250, 250, 0.95);',
-    borderRadius: '25px',
-    boxShadow: 24,
-    p: 4,
-};
-
 function GiftSuggestions({ suggestions, recipientParameters }) {
+    const [age, setAge] = useState(recipientParameters.associatedAge);
+    const [relationship, setRelationship] = useState(recipientParameters.associatedRelationship);
+    const [sex, setSex] = useState(recipientParameters.pronoun);
+    const [interests, setInterests] = useState(recipientParameters.associatedInterests);
+    const [maxPrice, setMaxPrice] = useState(recipientParameters.maxPrice);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
     const { registerHandler } = useExitIntent({
-        "cookie": {
-            "daysToExpire": 30,
-            "key": "use-exit-intent"
-        },
         "desktop": {
-            "triggerOnIdle": true,
+            "triggerOnIdle": false,
             "useBeforeUnload": true,
-            "triggerOnMouseLeave": true,
-            "delayInSecondsToTrigger": 3
+            "triggerOnMouseLeave": true
         },
         "mobile": {
-            "triggerOnIdle": true,
-            "delayInSecondsToTrigger": 3
+            "triggerOnIdle": false
         }
     })
 
@@ -64,14 +52,37 @@ function GiftSuggestions({ suggestions, recipientParameters }) {
         setEmail(event.target.value);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateEmail(email)) {
-            // Perform email submission logic here
-            console.log('Email submitted:', email);
-            // Reset the email input field
-            setEmail('');
-            // Close the modal
-            handleClose();
+            try {
+                console.log("email: ", email)
+                const sendEmailResponse = await axios.post('/api/sendgrid', {
+                    email: email,
+                    suggestions: suggestions,
+                });
+
+                const updateContactsResponse = await axios.put('/api/sendgrid-update-contacts', {
+                    contacts: [
+                        {
+                            email: email,
+                            custom_fields: {
+                                w1_T: relationship,
+                                w2_T: age,
+                                w3_T: sex,
+                                w4_T: interests.join(','),
+                                w5_T: maxPrice,
+                            },
+                        },
+                    ],
+                });
+
+                // Reset the email input field
+                setEmail('');
+                // Close the modal
+                handleClose();
+            } catch (error) {
+                console.error('Error submitting email:', error);
+            }
         } else {
             setEmailError('Invalid email address');
         }
@@ -106,41 +117,51 @@ function GiftSuggestions({ suggestions, recipientParameters }) {
 
     return (
         <>
-            <Modal
-                open={open}
-                onClose={handleModalClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <Typography sx={{ textAlign: 'center' }} id="modal-modal-title" variant="h4" component="h2">
-                        Don&apos;t lose your gift suggestions!
-                    </Typography>
-                    <TextField
-                        label="Email"
-                        value={email}
-                        onChange={handleEmailChange}
-                        fullWidth
-                        sx={{ mt: 2 }}
-                        error={Boolean(emailError)}
-                        helperText={emailError}
-                    />
-                    <Button variant="contained" onClick={handleSubmit} sx={{ mt: 2 }}>
-                        Submit
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={handleClose}
-                        sx={{ mt: 1 }}
-                    >
-                        Cancel
-                    </Button>
-                </Box>
-            </Modal>
+            <div className={styles.floatingActionButton}>
+                <Fab color="secondary" variant='extended' aria-label="Add" onClick={handleOpen}>
+                    <EmailIcon sx={{ mr: 1 }} />
+                    Save These Results
+                </Fab>
+            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'rgba(250, 250, 250,  0.85)' }}>
+            <Dialog
+                open={open} onClose={handleModalClose} fullWidth maxWidth="sm">
+                <DialogTitle sx={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between' }} disableTypography className={styles.dialogTitle}>
+                    <div style={{ marginLeft: '5%' }}>
+                        <h2>Don&apos;t lose your gift suggestions!</h2>
+                        <h5>Email yourself a copy</h5>
+                    </div>
+                    <IconButton onClick={handleModalClose} style={{ ml: 'auto', width: 40, height: 40 }}>
+                        <CloseIcon color="primary" />
+                    </IconButton>
+                </DialogTitle>
+
+                <DialogContent>
+                    <Stack spacing={2} margin={1}>
+                        <TextField
+                            label="Email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            fullWidth
+                            error={Boolean(emailError)}
+                            helperText={emailError}
+                        />
+                        <Button variant="contained" onClick={handleSubmit} sx={{ mt: 2 }}>
+                            Submit
+                        </Button>
+                    </Stack>
+                </DialogContent>
+            </Dialog>
+
+            <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'rgba(255, 255, 255, 0.85)' }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h1 style={{ marginTop: '20px', textAlign: 'center' }}>Your Gift Ideas!</h1>
+
+                    <div style={{ marginTop: '20px', textAlign: 'center', marginBottom: '8px' }}>
+                        <h1>Your Gift Ideas!</h1>
+                        <h3>Explore these curated gift ideas, generated specifically for you.</h3>
+                        <Link href={`/?maxPrice=${recipientParameters.maxPrice}&associatedRelationship=${recipientParameters.associatedRelationship}&pronoun=${recipientParameters.pronoun}&associatedAge=${recipientParameters.associatedAge}`}>Search again with new interests</Link>
+                    </div>
+
                     <div className={styles.suggestions}>
                         {suggestions.map((suggestion) => (
                             <div title={suggestion.title} key={suggestion.title} className={styles.card}>

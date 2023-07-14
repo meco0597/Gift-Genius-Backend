@@ -10,6 +10,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 import Head from "next/head";
 import Link from "next/link";
+import Script from 'next/script'
 
 const MyApp = ({ Component, pageProps }) => {
   const [loading, setLoading] = useState(false);
@@ -42,6 +43,23 @@ const MyApp = ({ Component, pageProps }) => {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <Header />
+
+      {/* Google Analytics Tags */}
+      <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-Z7QMWJWMD9" />
+      <Script
+        id='google-analytics'
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-Z7QMWJWMD9', {
+            page_path: window.location.pathname,
+          });
+        `,
+        }}
+      />
 
       <CssBaseline />
       {loading ? (

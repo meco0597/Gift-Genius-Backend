@@ -55,20 +55,21 @@ const Home = () => {
 
   return (
     <main className={styles.main}>
-      <div className="home-banner" style={{ textAlign: 'center', marginTop: '50px', marginBottom: '30px' }}>
-        <h1>Give The Perfect Gift </h1>
-        <h5>AI Powered Gift Suggestions That Simplify The Joy of Gift Giving.</h5>
+      <div style={{ textAlign: 'center', marginTop: '50px', marginBottom: '8px' }}>
+        <h1 style={{ fontWeight: '400' }}>Give The Perfect Gift 🎁</h1>
+        <h4>AI Powered Gift Suggestions</h4>
+        <h5>Thoughtful Gifts, Made Easy</h5>
       </div>
       <div className={styles.container}>
         <form className="form-inline" style={{ maxWidth: '700px' }} onSubmit={handleSubmit}>
-          <div className="input-group form-group mb-3">
+          <div className="input-group form-group">
             <label style={{ fontSize: '20px' }}>Who is this Gift For?</label>
             <RelationshipSelect
               currentValue={associatedRelationship}
               onChange={(e) => setAssociatedRelationship(e.target.value)}
             />
 
-            <label>Pronoun:</label>
+            <label>Sex:</label>
             <PronounSelect currentValue={prounoun} onChange={(e) => setProunoun(e.target.value)} />
 
             <label>Age:</label>

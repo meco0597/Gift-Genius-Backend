@@ -9,8 +9,17 @@ $theme-colors: (
     'dark': #001738,
 );
 
+@import '/node_modules/bootstrap/scss/bootstrap.scss';
+
 .input-group {
     justify-content: center;
 }
 
-@import '/node_modules/bootstrap/scss/bootstrap.scss';
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 325;
+}

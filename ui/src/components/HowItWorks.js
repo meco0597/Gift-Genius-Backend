@@ -11,7 +11,7 @@ const item = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    px: 5,
+    px: 2,
 };
 
 const number = {
@@ -22,6 +22,7 @@ const number = {
 };
 
 const image = {
+    fontSize: 48,
     height: 55,
     my: 4,
 };
@@ -34,7 +35,7 @@ function HowItWorks() {
         >
             <Container
                 sx={{
-                    mt: 10,
+                    mt: 5,
                     mb: 15,
                     position: 'relative',
                     display: 'flex',
@@ -49,23 +50,23 @@ function HowItWorks() {
                     <Grid container spacing={5}>
                         <Grid item xs={12} md={4}>
                             <Box sx={item}>
-                                <Box sx={image}><PersonSearchOutlinedIcon fontSize='large' /></Box>
-                                <h4 className='how-it-works-bold'>Explore Personalized Gift Ideas</h4>
-                                <h5>Our app simplifies the gift-giving process by allowing you to provide basic information and our advanced algorithm generates a curated list of gift suggestions tailored specifically to the recipient.</h5>
+                                <Box sx={image}>💡</Box>
+                                <h4 className='how-it-works-bold'>Gift Ideas, Made Easy</h4>
+                                <h5>Finding gifts is hard. With just a few inputs, we use AI to curate incredibly unique gifts to help quickly and easily find the perfect gift for any occasion.</h5>
                             </Box>
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box sx={item}>
-                                <Box sx={image}><MemoryOutlinedIcon fontSize='large' /></Box>
+                                <Box sx={image}>🧠</Box>
                                 <h4 className='how-it-works-bold'>Harnessing the Power of AI</h4>
-                                <h5>We leverage the capabilities of cutting-edge AI technology, to provide intelligent and personalized gift recommendations.</h5>
+                                <h5>We use intelligent AI to give you gift giving super powers! Each recommendation is specifically generated to find you the most thoughtful gifts.</h5>
                             </Box>
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box sx={item}>
-                                <Box sx={image}><CardGiftcardOutlinedIcon fontSize='large' /></Box>
-                                <h4 className='how-it-works-bold'>Effortless Gift Inspiration</h4>
-                                <h5>With just a few clicks, our app provides you with relevant gift ideas. You can easily explore different options, regenerate suggestions, and find the perfect gift without the hassle of endless searching.</h5>
+                                <Box sx={image}>⏰</Box>
+                                <h4 className='how-it-works-bold'>Save Time For What Matters</h4>
+                                <h5>We make it easy to quickly search, find and order the perfect gift for anyone in your life, so you get back to doing what you love.</h5>
                             </Box>
                         </Grid>
                     </Grid>

@@ -44,6 +44,7 @@ const MultiselectWithCreate = ({ setAssociatedInterests, focus }) => {
             autoSelect={true}
             autoHighlight={true}
             filterSelectedOptions
+            fullWidth
             onInputChange={(event, newInputValue) => {
                 if (newInputValue.endsWith(',')) {
                     event.target.blur()

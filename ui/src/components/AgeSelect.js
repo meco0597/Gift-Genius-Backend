@@ -32,7 +32,7 @@ const AgeSelect = (props) => {
         <Box sx={{ minWidth: '100%' }}>
             <FormControl fullWidth>
                 <Select
-                    style={{ backgroundColor: 'rgba(250, 250, 250,  0.50)' }}
+                    style={{ backgroundColor: 'rgba(255, 255, 255, 0.50)' }}
                     id="demo-simple-select"
                     value={props.currentValue}
                     onChange={props.onChange}

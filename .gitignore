@@ -44,3 +44,7 @@ givr_ai.crt
 givr_ai.p7b
 givr_ai.ca-bundle
 GiftSuggestionService/bin/*
+/ui/.env.development
+/ui/.env.production
+/ui/.env.development
+/ui/.env.production

@@ -43,7 +43,7 @@ namespace GiftSuggestionService.Controllers
         [HttpPost(Name = "GetGiftSuggestionsBySearchParameters")]
         public async Task<ActionResult<IEnumerable<GeneratedGiftSuggestion>>> GetGiftSuggestions(GiftSuggestionSearchDto searchParams)
         {
-            return await this.gptManagementService.GetGiftSuggestions(searchParams);
+            return await this.gptManagementService.GetProductGiftSuggestions(searchParams);
         }
 
         [HttpPost("amazon/search", Name = "GetAmazonSuggestionsByGiftSuggestions")]
@@ -57,13 +57,31 @@ namespace GiftSuggestionService.Controllers
         [HttpPost("amazon/generate", Name = "GetAmazonSuggestionsBySearchParameters")]
         public async Task<ActionResult<IEnumerable<AmazonProduct>>> SearchAmazonSuggestionsBySearchParams(GiftSuggestionSearchDto searchParams)
         {
-            // grab gift suggestions from gpt based on query paramss
-            List<GeneratedGiftSuggestion> generatedGiftSuggestions = await this.gptManagementService.GetGiftSuggestions(searchParams);
+            // Execute both blocks concurrently using Task.WhenAll
+            Task<List<AmazonProduct>> productTask = GetProductSuggestionsAsync(searchParams);
+            Task<List<AmazonProduct>> genericProductTask = GetGenericProductSuggestionsAsync(searchParams);
 
-            // ask amazon for 2 products
-            var products = await this.GetProductsFromAmazon(generatedGiftSuggestions, searchParams);
+            await Task.WhenAll(productTask, genericProductTask);
 
+            var products = productTask.Result;
+            var genericProducts = genericProductTask.Result;
+
+            products.AddRange(genericProducts);
             return Ok(products);
+        }
+
+        private async Task<List<AmazonProduct>> GetProductSuggestionsAsync(GiftSuggestionSearchDto searchParams)
+        {
+            // grab gift suggestions from gpt based on query params
+            List<GeneratedGiftSuggestion> generatedGiftSuggestions = await this.gptManagementService.GetProductGiftSuggestions(searchParams);
+            return await GetProductsFromAmazon(generatedGiftSuggestions, searchParams, 1);
+        }
+
+        private async Task<List<AmazonProduct>> GetGenericProductSuggestionsAsync(GiftSuggestionSearchDto searchParams)
+        {
+            // grab generic gift suggestions from gpt based on query params
+            List<GeneratedGiftSuggestion> generatedGenericGiftSuggestions = await this.gptManagementService.GetGenericGiftSuggestions(searchParams);
+            return await GetProductsFromAmazon(generatedGenericGiftSuggestions, searchParams, 1);
         }
 
         [HttpGet(Name = "GetAllGiftSuggestions")]
@@ -132,11 +150,11 @@ namespace GiftSuggestionService.Controllers
             return Ok();
         }
 
-        private async Task<List<AmazonProduct>> GetProductsFromAmazon(List<GeneratedGiftSuggestion> generatedGiftSuggestions, GiftSuggestionSearchDto searchParams)
+        private async Task<List<AmazonProduct>> GetProductsFromAmazon(List<GeneratedGiftSuggestion> generatedGiftSuggestions, GiftSuggestionSearchDto searchParams, int numOfProducts = 2)
         {
             // ask amazon for 2 products
             Dictionary<string, List<AmazonProductResponseModelv2>> queryProductMapping = await this.amazonProductManagementService.GetAmazonProductDetailsFromListOfQueries(
-                generatedGiftSuggestions.Select(x => x.Name).ToList(), searchParams.MaxPrice, numOfProducts: 2);
+                generatedGiftSuggestions.Select(x => x.Name).ToList(), searchParams.MaxPrice, numOfProducts: numOfProducts);
 
             // Create and store the product models into the DB
             List<AmazonProduct> products = new List<AmazonProduct>();
