@@ -27,8 +27,8 @@ spec:
               cpu: 150m
               memory: 250Mi
             limits:
-              memory: "900Mi"
-              cpu: "1100m"
+              cpu: 85m # Adjusted to match the available CPU capacity of the single node
+              memory: "1Gi" # Adjusted to fit within the available Memory capacity
           ports:
             - containerPort: 8080
             - containerPort: 443

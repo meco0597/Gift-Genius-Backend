@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using MongoDB.Bson;
@@ -29,6 +30,8 @@ namespace GiftSuggestionService.Models
 
         [BsonRepresentation(BsonType.String)]
         public List<Pronoun> AssociatedPronouns { get; set; }
+
+        public List<string> AssociatedOccasions { get; set; }
 
         public long NumOfUpvotes { get; set; }
 

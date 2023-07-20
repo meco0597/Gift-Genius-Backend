@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -80,16 +81,16 @@ namespace GiftSuggestionService.Services
                 }
             });
 
-            productList = productList.Where(x => x.Price <= maxPrice).ToList();
+            productList = productList.Where(x => x.Price <= maxPrice).OrderByDescending(x => x.Price).ToList();
 
             int numOfProductsLeft = productList.Count;
-            if (numOfProductsLeft < numOfProducts * 2)
+            if (numOfProductsLeft <= numOfProducts)
             {
-                return productList.Take(numOfProducts - productsToReturn.Count).ToList();
+                return productList.Take(numOfProductsLeft).ToList();
             }
             else
             {
-                return productList.OrderBy(x => Guid.NewGuid()).Take(numOfProducts - productsToReturn.Count).ToList();
+                return productList.Take(numOfProducts).ToList();
             }
         }
 

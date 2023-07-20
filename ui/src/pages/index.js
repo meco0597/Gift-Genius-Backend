@@ -8,6 +8,8 @@ import Slider from '@mui/material/Slider';
 import styles from "../styles/Home.module.css";
 import { getListItemSecondaryActionClassesUtilityClass } from "@mui/material";
 import HowItWorks from "../components/HowItWorks";
+import SingleSelect from "../components/OccasionSelect";
+import OccasionSelect from "../components/OccasionSelect";
 
 const Home = () => {
   const router = useRouter();
@@ -15,6 +17,7 @@ const Home = () => {
   const [prounoun, setProunoun] = useState("he");
   const [associatedInterests, setAssociatedInterests] = useState("");
   const [associatedAge, setAssociatedAge] = useState("twenties");
+  const [occasion, setOccasion] = useState("birthday");
   const [maxPrice, setMaxPrice] = useState(50);
   const [interestsFocus, setInterestsFocus] = useState(false);
 
@@ -27,6 +30,9 @@ const Home = () => {
     }
     if (router.query.associatedAge) {
       setAssociatedAge(router.query.associatedAge);
+    }
+    if (router.query.occasion) {
+      setOccasion(router.query.occasion);
     }
     if (router.query.maxPrice) {
       setMaxPrice(parseInt(router.query.maxPrice));
@@ -48,6 +54,7 @@ const Home = () => {
         pronoun: prounoun,
         associatedAge: associatedAge,
         associatedInterests: associatedInterests,
+        occasion: occasion,
         maxPrice: maxPrice,
       },
     });
@@ -82,7 +89,13 @@ const Home = () => {
             <label htmlFor="interests">Interests:</label>
             <MultiselectWithCreate setAssociatedInterests={setAssociatedInterests} focus={interestsFocus} />
 
-            <label htmlFor="maxPrice" className="form-label">Max Price: ${maxPrice}</label>
+            <label style={{ fontSize: '20px', marginTop: '32px' }}>What is the Occasion?</label>
+            <OccasionSelect
+              currentValue={occasion}
+              onChange={(e) => setOccasion(e.target.value)}
+            />
+
+            <label style={{ fontSize: '20px', marginTop: '32px' }} htmlFor="maxPrice" className="form-label">What is your budget?: ${maxPrice}</label>
             <Slider
               aria-label="max-price"
               defaultValue={maxPrice}

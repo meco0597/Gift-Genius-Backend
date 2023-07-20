@@ -8,6 +8,8 @@ namespace GiftSuggestionService.Dtos
     {
         public Pronoun Pronoun { get; set; }
 
+        public string Occasion { get; set; }
+
         public int? MinPrice { get; set; }
 
         public int? MaxPrice { get; set; }

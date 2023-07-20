@@ -41,6 +41,8 @@ const MyApp = ({ Component, pageProps }) => {
         />
         <link rel="icon" href="/GivrLogoSmall.png" />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
+
+
       </Head>
       <Header />
 
@@ -51,15 +53,14 @@ const MyApp = ({ Component, pageProps }) => {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-Z7QMWJWMD9', {
-            page_path: window.location.pathname,
-          });
-        `,
-        }}
-      />
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-Z7QMWJWMD9', {
+              page_path: window.location.pathname,
+            });
+          `,
+        }} />
 
       <CssBaseline />
       {loading ? (

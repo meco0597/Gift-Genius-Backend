@@ -17,10 +17,14 @@ namespace GiftSuggestionService.Models
             var associatedAges = new List<AgeDescriptor>();
             var associatedRelationships = new List<RelationshipDescriptor>();
             var associatedPronouns = new List<Pronoun>();
+            var associatedOccasions = new List<string>();
             int minPrice = int.MaxValue;
             int maxPrice = int.MinValue;
             associatedRelationships.Add((RelationshipDescriptor)searchParams.AssociatedRelationship);
             associatedAges.Add((AgeDescriptor)searchParams.AssociatedAge);
+            associatedPronouns.Add((Pronoun)searchParams.Pronoun);
+            associatedOccasions.Add(searchParams.Occasion);
+
             if (searchParams.MinPrice != null)
             {
                 minPrice = (int)searchParams.MinPrice;
@@ -39,6 +43,7 @@ namespace GiftSuggestionService.Models
                 MinPrice = minPrice,
                 MaxPrice = maxPrice,
                 AssociatedPronouns = associatedPronouns,
+                AssociatedOccasions = associatedOccasions,
             };
         }
     }

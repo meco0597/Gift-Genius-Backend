@@ -81,7 +81,7 @@ namespace GiftSuggestionService.Controllers
         {
             // grab generic gift suggestions from gpt based on query params
             List<GeneratedGiftSuggestion> generatedGenericGiftSuggestions = await this.gptManagementService.GetGenericGiftSuggestions(searchParams);
-            return await GetProductsFromAmazon(generatedGenericGiftSuggestions, searchParams, 1);
+            return await GetProductsFromAmazon(generatedGenericGiftSuggestions, searchParams, 3);
         }
 
         [HttpGet(Name = "GetAllGiftSuggestions")]

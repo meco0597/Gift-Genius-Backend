@@ -31,6 +31,7 @@ function GiftSuggestions({ suggestions, recipientParameters }) {
     const [relationship, setRelationship] = useState(recipientParameters.associatedRelationship);
     const [sex, setSex] = useState(recipientParameters.pronoun);
     const [interests, setInterests] = useState(recipientParameters.associatedInterests);
+    const [occasion, setOccasion] = useState(recipientParameters.occasion);
     const [maxPrice, setMaxPrice] = useState(recipientParameters.maxPrice);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -71,6 +72,7 @@ function GiftSuggestions({ suggestions, recipientParameters }) {
                                 w3_T: sex,
                                 w4_T: interests.join(','),
                                 w5_T: maxPrice,
+                                w6_T: occasion,
                             },
                         },
                     ],
@@ -108,8 +110,8 @@ function GiftSuggestions({ suggestions, recipientParameters }) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <h1 style={{ marginTop: '20px', textAlign: 'center' }}>No gift suggestions found</h1>
-                <Link href="/">
-                    <p style={{ textAlign: 'center', color: '#0066cc' }}>Try Again</p>
+                <Link href={`/?maxPrice=${recipientParameters.maxPrice}&associatedRelationship=${recipientParameters.associatedRelationship}&occasion=${occasion}&pronoun=${recipientParameters.pronoun}&associatedAge=${recipientParameters.associatedAge}`}>
+                    <p style={{ textAlign: 'center', color: '#0066cc' }}>Try Again With Different Interests</p>
                 </Link>
             </div>
         );
@@ -159,7 +161,7 @@ function GiftSuggestions({ suggestions, recipientParameters }) {
                     <div style={{ marginTop: '20px', textAlign: 'center', marginBottom: '8px' }}>
                         <h1>Your Gift Ideas!</h1>
                         <h3>Explore these curated gift ideas, generated specifically for you.</h3>
-                        <Link href={`/?maxPrice=${recipientParameters.maxPrice}&associatedRelationship=${recipientParameters.associatedRelationship}&pronoun=${recipientParameters.pronoun}&associatedAge=${recipientParameters.associatedAge}`}>Search again with new interests</Link>
+                        <Link href={`/?maxPrice=${recipientParameters.maxPrice}&associatedRelationship=${recipientParameters.associatedRelationship}&occasion=${occasion}&pronoun=${recipientParameters.pronoun}&associatedAge=${recipientParameters.associatedAge}`}>Search again with new interests</Link>
                     </div>
 
                     <div className={styles.suggestions}>
@@ -187,7 +189,7 @@ function GiftSuggestions({ suggestions, recipientParameters }) {
                     <p style={{ fontSize: '16px' }}>Not what you&apos;re looking for?</p>
                     <Link
                         style={{ textDecoration: 'none' }}
-                        href={`/?maxPrice=${recipientParameters.maxPrice}&associatedRelationship=${recipientParameters.associatedRelationship}&pronoun=${recipientParameters.pronoun}&associatedAge=${recipientParameters.associatedAge}`}>
+                        href={`/?maxPrice=${recipientParameters.maxPrice}&associatedRelationship=${recipientParameters.associatedRelationship}&occasion=${occasion}&pronoun=${recipientParameters.pronoun}&associatedAge=${recipientParameters.associatedAge}`}>
                         <button className="btn btn-primary" style={{ padding: '10px 20px', fontSize: '14px', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Try Different Interests</button>
                     </Link>
                 </div>
@@ -208,16 +210,17 @@ GiftSuggestions.propTypes = {
         maxPrice: PropTypes.string.isRequired,
         associatedAge: PropTypes.string.isRequired,
         associatedRelationship: PropTypes.string.isRequired,
-        associatedInterests: PropTypes.string.isRequired,
+        associatedInterests: PropTypes.array.isRequired,
+        occasion: PropTypes.string.isRequired,
         pronoun: PropTypes.string.isRequired,
     }).isRequired,
 };
 
 export async function getServerSideProps(context) {
     const { query, res } = context;
-    const { associatedRelationship, pronoun, associatedAge, associatedInterests, maxPrice } = query;
+    const { associatedRelationship, pronoun, associatedAge, associatedInterests, occasion, maxPrice } = query;
 
-    if (!associatedRelationship || !pronoun || !associatedAge || !associatedInterests || !maxPrice) {
+    if (!associatedRelationship || !pronoun || !associatedAge || !associatedInterests || !occasion || !maxPrice) {
         res.writeHead(301, { Location: '/' });
         res.end();
         return { props: {} };
@@ -236,6 +239,7 @@ export async function getServerSideProps(context) {
             pronoun,
             associatedAge,
             associatedInterests: associatedInterests.split(','),
+            occasion,
             maxPrice,
         });
 
@@ -252,6 +256,7 @@ export async function getServerSideProps(context) {
                     associatedAge: associatedAge,
                     associatedRelationship: associatedRelationship,
                     associatedInterests: associatedInterests.split(','),
+                    occasion: occasion,
                     pronoun: pronoun,
                 }
             },

@@ -11,6 +11,9 @@ using OpenAI_API;
 using OpenAI_API.Completions;
 using OpenAI_API.Models;
 using OpenAI_API.Chat;
+using Polly;
+using Polly.Retry;
+using System.Net.Http;
 
 namespace GiftSuggestionService.Services
 {
@@ -33,6 +36,17 @@ namespace GiftSuggestionService.Services
             { Pronoun.She, "is" },
             { Pronoun.They, "are" },
         };
+        private AsyncRetryPolicy retryPolicy = Policy
+            .Handle<HttpRequestException>() // Adjust the exception type based on your needs
+            .WaitAndRetryAsync(
+                retryCount: 3, // Number of retries
+                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), // Exponential backoff
+                onRetry: (exception, calculatedWaitDuration) =>
+                {
+                    // Optionally log or handle the retry attempt here
+                    Console.WriteLine($"Request to OpenAI failed. Retry due to exception: {exception.Message}. Retrying in {calculatedWaitDuration.TotalSeconds} seconds...");
+                });
+
 
         public GptManagementService(
             KeyvaultAccessorService keyvaultAccessorService,
@@ -50,7 +64,11 @@ namespace GiftSuggestionService.Services
         public async Task<List<GeneratedGiftSuggestion>> GetProductGiftSuggestions(GiftSuggestionSearchDto searchParams)
         {
             List<ChatMessage> chatProductPrompt = this.GenerateChatMessagesForProductSuggestions(searchParams);
-            string productResponse = await this.SendChatRequestToOpenAi(chatProductPrompt);
+            string productResponse = await retryPolicy.ExecuteAsync(async () =>
+            {
+                return await this.SendChatRequestToOpenAi(chatProductPrompt);
+            });
+
             var generatedGiftSuggestions = this.ParseGptResponse(productResponse);
 
             return generatedGiftSuggestions;
@@ -59,7 +77,11 @@ namespace GiftSuggestionService.Services
         public async Task<List<GeneratedGiftSuggestion>> GetGenericGiftSuggestions(GiftSuggestionSearchDto searchParams)
         {
             List<ChatMessage> chatGenericPrompt = this.GenerateChatMessagesForGenericSuggestions(searchParams);
-            string response = await this.SendChatRequestToOpenAi(chatGenericPrompt);
+            string response = await retryPolicy.ExecuteAsync(async () =>
+            {
+                return await this.SendChatRequestToOpenAi(chatGenericPrompt);
+            });
+
             var generatedGiftSuggestions = this.ParseGptResponse(response);
 
             return generatedGiftSuggestions;
@@ -69,10 +91,10 @@ namespace GiftSuggestionService.Services
         {
             return new List<ChatMessage>()
             {
-                new ChatMessage(ChatMessageRole.System, "You are a gifting expert who helps me find creative, useful, and unique gift ideas. You will be given a max price and information about a person's age, sex, and interests and your job will be to provide up to 8 amazon search queries that will result in relevant gifts. Use brand names when appropriate. Do your best to suggest gifts within 20% of the maximum price threshold. In case the age or relationship don't make sense, don't ask for any corrections or clarifications, only respond with search queries based on the interests. Don't make the search queries generic."),
-                new ChatMessage(ChatMessageRole.User, "Come up with gift suggestions for my mom. She is in her fifties, and she has an interest in cooking and sewing. Max price is $100."),
-                new ChatMessage(ChatMessageRole.Assistant, "Gift Idea: Instant Pot Duo 7-in-1 Electric Pressure Cooker\nGift Categories: cooking\n\nGift Idea: Homemade Pasta Making Set\nGift Categories: cooking\n\nGift Idea: Embroidery Kit\nGift Categories: sewing\n\nGift Idea: Customized Apron\nGift Categories: cooking\n\nGift Idea: Cute Sewing Pin Cushion\nGift Categories: sewing\n\nGift Idea: Herb Garden Starter Kit\nGift Categories: cooking\n\nGift Idea: Popular cooking gifts for mom\nGift Categories: cooking"),
-                new ChatMessage(ChatMessageRole.User, $"{this.GetProductPromptVerbage(searchParams.AssociatedRelationship, searchParams.AssociatedAge, searchParams.Pronoun, searchParams.AssociatedInterests, (int)searchParams.MaxPrice)}")
+                new ChatMessage(ChatMessageRole.System, "You are a gifting expert. Given a budget, occasion, age, sex, and interests, suggest up to 5 gift ideas within 20% of the max price. Use brand names when appropriate. In case the age or relationship don't make sense, don't ask for any corrections or clarifications, only respond with search queries based on the interests."),
+                new ChatMessage(ChatMessageRole.User, "Come up with gift suggestions for my mom. She is in her fifties, and she has an interest in cooking and sewing. Max price is $100. Occasion is Birthday."),
+                new ChatMessage(ChatMessageRole.Assistant, "Gift Idea: Instant Pot Duo 7-in-1 Electric Pressure Cooker\nGift Categories: cooking\n\nGift Idea: Homemade Pasta Making Set\nGift Categories: cooking\n\nGift Idea: Embroidery Kit\nGift Categories: sewing\n\nGift Idea: Customized Apron\nGift Categories: cooking\n\nGift Idea: Cute Sewing Pin Cushion\nGift Categories: sewing"),
+                new ChatMessage(ChatMessageRole.User, $"{this.GetProductPromptVerbage(searchParams.AssociatedRelationship, searchParams.AssociatedAge, searchParams.Pronoun, searchParams.AssociatedInterests, searchParams.Occasion, (int)searchParams.MaxPrice)}")
             };
         }
 
@@ -80,10 +102,10 @@ namespace GiftSuggestionService.Services
         {
             return new List<ChatMessage>()
             {
-                new ChatMessage(ChatMessageRole.System, "You are a gifting expert who helps me find creative, useful, and unique gift ideas. You will be given a max price and information about a person's age, sex, and interests and your job will be to provide up to 8 Amazon search queries that will yield amazing gift suggestions for this person. In case the age or relationship don't make sense, don't ask for any corrections or clarifications, only respond with search queries."),
-                new ChatMessage(ChatMessageRole.User, "Come up with amazon gift queries for my mom. She is in her fifties, and she has an interest in cooking and sewing. Max price is $100."),
-                new ChatMessage(ChatMessageRole.Assistant, "Gift Idea: Cooking gifts for mom\nGift Categories: cooking\n\nGift Idea: Sewing gifts for mom\nGift Categories: sewing\n\nGift Idea: Gifts for Mom over $50\nGift Categories: Mom\n\nGift Idea: Funny cooking Gifts for Mom \nGift Categories: cooking\n\nGift Idea: Cute sewing gifts over $75\nGift Categories: sewing\n\nGift Idea: Cookware gifts\nGift Categories: cooking\n\nGift Idea: Gifts for a seamstress\nGift Categories: sewing"),
-                new ChatMessage(ChatMessageRole.User, $"{this.GetProductPromptVerbage(searchParams.AssociatedRelationship, searchParams.AssociatedAge, searchParams.Pronoun, searchParams.AssociatedInterests, (int)searchParams.MaxPrice, false)}")
+                new ChatMessage(ChatMessageRole.System, "You are a gifting expert. Given a budget, occasion, age, sex, and interests, suggest up to 4 Amazon search queries for gifts. In case the age or relationship don't make sense, don't ask for any corrections or clarifications, only respond with search queries based on the interests."),
+                new ChatMessage(ChatMessageRole.User, "Come up with amazon gift queries for my mom. She is in her fifties, and she has an interest in cooking and sewing. Max price is $100. Occasion is Birthday."),
+                new ChatMessage(ChatMessageRole.Assistant, "Gift Idea: Cooking birthday gifts for mom\nGift Categories: cooking\n\nGift Idea: Sewing gifts for mom\nGift Categories: sewing\n\nGift Idea: Birthday gifts for Mom over $50\nGift Categories: Mom\n\nGift Idea: Funny cooking Gifts for Mom\nGift Categories: cooking"),
+                new ChatMessage(ChatMessageRole.User, $"{this.GetProductPromptVerbage(searchParams.AssociatedRelationship, searchParams.AssociatedAge, searchParams.Pronoun, searchParams.AssociatedInterests, searchParams.Occasion, (int)searchParams.MaxPrice, false)}")
             };
         }
 
@@ -100,7 +122,7 @@ namespace GiftSuggestionService.Services
                 Model = Model.ChatGPTTurbo,
                 Messages = messages,
                 Temperature = 0.7,
-                MaxTokens = 2048,
+                MaxTokens = 1024,
                 TopP = 1,
                 FrequencyPenalty = 0.5,
                 PresencePenalty = 0.1
@@ -137,7 +159,7 @@ namespace GiftSuggestionService.Services
             return toReturn;
         }
 
-        private string GetProductPromptVerbage(RelationshipDescriptor relationship, AgeDescriptor ageDescriptor, Pronoun pronoun, List<string> associatedInterests, int maxPrice, bool isForProduct = true)
+        private string GetProductPromptVerbage(RelationshipDescriptor relationship, AgeDescriptor ageDescriptor, Pronoun pronoun, List<string> associatedInterests, string occasion, int maxPrice, bool isForProduct = true)
         {
             // Come up with gift suggestions for my mom. She is in her Fifties and she has an interest in cooking, and sewing. Max price is $50.
             string toReturn = $"Come up with {(isForProduct ? "gift suggestions" : "amazon gift queries")} for my {relationship}. {pronoun} {this.pronounPossesive[pronoun] ?? "is"}";
@@ -157,7 +179,7 @@ namespace GiftSuggestionService.Services
                     break;
             }
 
-            toReturn += $", and {pronoun} {(pronoun == Pronoun.They ? "have" : "has")} an interest in {this.JoinListOfInterests(associatedInterests)}. Max price is ${maxPrice}.";
+            toReturn += $", and {pronoun} {(pronoun == Pronoun.They ? "have" : "has")} an interest in {this.JoinListOfInterests(associatedInterests)}. Max price is ${maxPrice}. Occasion is {occasion}";
             return toReturn;
         }
 

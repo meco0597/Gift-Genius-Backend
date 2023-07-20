@@ -26,6 +26,8 @@ namespace GiftSuggestionService.Dtos
 
         public List<AgeDescriptor> AssociatedAgeRanges { get; set; }
 
+        public List<string> AssociatedOccasions { get; set; }
+
         public long NumOfUpvotes { get; set; }
     }
 }

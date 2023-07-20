@@ -1,7 +1,6 @@
 namespace GiftSuggestionService.Dtos
 {
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
     using GiftSuggestionService.Models;
 
     public class GiftSuggestionPutDto
@@ -17,6 +16,8 @@ namespace GiftSuggestionService.Dtos
         public List<RelationshipDescriptor> AssociatedRelationships { get; set; }
 
         public List<AgeDescriptor> AssociatedAgeRanges { get; set; }
+
+        public List<string> AssociatedOccasions { get; set; }
 
         public long NumOfUpvotes { get; set; }
     }

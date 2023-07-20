@@ -79,7 +79,7 @@ namespace GiftSuggestionService.Data
                 {
                     Id = id,
                     GiftName = giftSuggestion.GiftName,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     ProductIds = giftSuggestion.ProductIds,
                     MinPrice = giftSuggestion.MinPrice,
                     MaxPrice = giftSuggestion.MaxPrice,
@@ -87,6 +87,7 @@ namespace GiftSuggestionService.Data
                     AssociatedAgeRanges = giftSuggestion.AssociatedAgeRanges,
                     AssociatedRelationships = giftSuggestion.AssociatedRelationships,
                     AssociatedPronouns = giftSuggestion.AssociatedPronouns,
+                    AssociatedOccasions = giftSuggestion.AssociatedOccasions,
                     NumOfUpvotes = 0,
                     NumOfClicks = 0,
                     NumOfTimesSuggested = 1,
@@ -101,6 +102,7 @@ namespace GiftSuggestionService.Data
                 exisitingGiftSuggestion.AssociatedAgeRanges = giftSuggestion.AssociatedAgeRanges?.Union(exisitingGiftSuggestion.AssociatedAgeRanges ?? new List<AgeDescriptor>()).ToList();
                 exisitingGiftSuggestion.AssociatedRelationships = giftSuggestion.AssociatedRelationships?.Union(exisitingGiftSuggestion.AssociatedRelationships ?? new List<RelationshipDescriptor>()).ToList();
                 exisitingGiftSuggestion.AssociatedPronouns = giftSuggestion.AssociatedPronouns?.Union(exisitingGiftSuggestion.AssociatedPronouns ?? new List<Pronoun>()).ToList();
+                exisitingGiftSuggestion.AssociatedOccasions = giftSuggestion.AssociatedOccasions?.Union(exisitingGiftSuggestion.AssociatedOccasions ?? new List<string>()).ToList();
                 exisitingGiftSuggestion.ProductIds = giftSuggestion.ProductIds?.Union(exisitingGiftSuggestion.ProductIds ?? new List<string>()).ToList();
                 // update 
                 GiftSuggestion updatedGiftSuggestion = new GiftSuggestion()
@@ -111,6 +113,7 @@ namespace GiftSuggestionService.Data
                     MinPrice = Math.Min(giftSuggestion.MinPrice, exisitingGiftSuggestion.MinPrice),
                     MaxPrice = Math.Max(giftSuggestion.MaxPrice, exisitingGiftSuggestion.MaxPrice),
                     AssociatedPronouns = exisitingGiftSuggestion.AssociatedPronouns,
+                    AssociatedOccasions = exisitingGiftSuggestion.AssociatedOccasions,
                     ProductIds = exisitingGiftSuggestion.ProductIds,
                     AssociatedInterests = exisitingGiftSuggestion.AssociatedInterests,
                     AssociatedAgeRanges = exisitingGiftSuggestion.AssociatedAgeRanges,
