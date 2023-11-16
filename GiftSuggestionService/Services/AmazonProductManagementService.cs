@@ -18,7 +18,7 @@ namespace GiftSuggestionService.Services
     {
         private readonly string rapidApiKey;
         private readonly AmazonProductConfiguration amazonProductConfiguration;
-        private string amazonAffiliateTag = "givr0e-20";
+        private string amazonAffiliateTag = "givr02-20";
 
         public AmazonProductManagementService(
             KeyvaultAccessorService keyvaultAccessorService,

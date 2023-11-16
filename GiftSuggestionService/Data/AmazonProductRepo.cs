@@ -62,6 +62,7 @@ namespace GiftSuggestionService.Data
             }
             else
             {
+                product.Price = exisitingProduct.Price + 1;
                 // update 
                 AmazonProduct updatedProduct = new AmazonProduct()
                 {

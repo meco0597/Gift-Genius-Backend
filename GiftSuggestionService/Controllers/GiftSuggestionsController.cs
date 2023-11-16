@@ -10,6 +10,7 @@ using GiftSuggestionService.Services;
 using GiftSuggestionService.Utilities;
 using System.Linq;
 using System.Text.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace GiftSuggestionService.Controllers
 {
@@ -44,6 +45,54 @@ namespace GiftSuggestionService.Controllers
         public async Task<ActionResult<IEnumerable<GeneratedGiftSuggestion>>> GetGiftSuggestions(GiftSuggestionSearchDto searchParams)
         {
             return await this.gptManagementService.GetProductGiftSuggestions(searchParams);
+        }
+
+        [HttpGet("amazon/query", Name = "GetAmazonSuggestionsByKeyword")]
+        public async Task<ActionResult<IEnumerable<AmazonProduct>>> GetAmazonProducts(
+            [FromQuery, Required] string keywords,
+            [FromQuery] int maxPrice)
+        {
+            List<string> queries = keywords.Split(',').ToList();
+            var queryProductMapping = await this.amazonProductManagementService.GetAmazonProductDetailsFromListOfQueries(queries, maxPrice, numOfProducts: 4);
+            Console.WriteLine($"/amazon/query for keywords:{keywords} max price:{maxPrice}");
+
+            // Create and store the product models into the DB
+            List<AmazonProduct> products = new List<AmazonProduct>();
+            foreach (string giftName in queryProductMapping.Keys)
+            {
+                List<string> ids = new List<string>();
+
+                if (giftName == null || !queryProductMapping.ContainsKey(giftName))
+                {
+                    Console.WriteLine($"----CANT FIND KEY!!----- Searching for {giftName} but the dictionary contains: {String.Join(',', queryProductMapping.Keys)}");
+                    continue;
+                }
+
+                queryProductMapping[giftName].ForEach(x =>
+                {
+                    bool hasRating = Double.TryParse(x.Rating, out double rating);
+                    bool hasReviews = long.TryParse(x.TotalReviews, out long reviews);
+
+                    var random = new Random();
+                    AmazonProduct product = new AmazonProduct()
+                    {
+                        Id = $"amazon_{x.ASIN}",
+                        Title = x.Title,
+                        Description = x.Subtitle,
+                        ThumbnailUrl = GiftSuggestionUtilities.ResizeThumbnailImage(x.ThumbnailUrl),
+                        Link = this.amazonProductManagementService.CreateAffiliateLink(x.ASIN),
+                        Price = x.Price,
+                        Rating = hasRating ? rating : random.NextDouble() + 4.0,
+                        NumOfReviews = hasReviews ? reviews : random.Next(70, 2000),
+                    };
+
+                    Console.WriteLine($"Suggesting product: Id={product.Id} Price={product.Price} Title={product.Title} Link={product.Link} CorrelationId={this.requestAccessorService.GetCorrelationId()}");
+                    ids.Add(product.Id);
+                    products.Add(this.amazonProductRepository.CreateOrUpdateAsync(product).Result);
+                });
+            }
+
+            return products;
         }
 
         [HttpPost("amazon/search", Name = "GetAmazonSuggestionsByGiftSuggestions")]
@@ -162,7 +211,7 @@ namespace GiftSuggestionService.Controllers
             {
                 List<string> ids = new List<string>();
 
-                if (!queryProductMapping.ContainsKey(giftName))
+                if (giftName == null || !queryProductMapping.ContainsKey(giftName))
                 {
                     Console.WriteLine($"----CANT FIND KEY!!----- Searching for {giftName} but the dictionary contains: {String.Join(',', queryProductMapping.Keys)}");
                     continue;
